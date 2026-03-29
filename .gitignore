@@ -5,6 +5,17 @@ node_modules/
 cache/
 colab/
 scripts/
+screenshots/
+video/
+
+# Unnecessary files
+devpost.txt
+notebook.ipynb
+Figma UX Challenge Description.pdf
+prototype/slides.html
+prototype/tribe-comparison.html
+prototype/design-system.html
+prototype/package.json
 
 # OS files
 .DS_Store
