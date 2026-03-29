@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Generated/cached files
+cache/
+colab/
+scripts/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Large binaries
+*.exe
+
+# Editor files
+.vscode/
+.idea/

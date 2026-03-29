@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1024">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <title>Solace — Anti-Pattern Version</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #FFFFFF;
+      --surface: #F8F8F8;
+      --border: #CCCCCC;
+      --border-light: #E0E0E0;
+      --ink: #000000;
+      --ink-mid: #333333;
+      --ink-light: #666666;
+      --accent: #E53E3E;
+      --accent-soft: #C53030;
+      --accent-light: #FFF5F5;
+      --green: #38A169;
+      --green-light: #F0FFF4;
+      --amber: #DD6B20;
+      --amber-light: #FFFAF0;
+      --nav-bg: #1A1A1A;
+      --nav-ink: rgba(255,255,255,0.4);
+      --nav-active: rgba(255,255,255,0.92);
+      --header-bg: #2D2D2D;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.15);
+      --shadow-md: 0 2px 8px rgba(0,0,0,0.2);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,0.25);
+      --radius: 4px;
+      --radius-sm: 3px;
+    }
+
+    html, body {
+      width: 1024px;
+      height: 768px;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    .app {
+      display: flex;
+      width: 1024px;
+      height: 768px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      width: 62px;
+      background: var(--nav-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 20px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .nav-brand {
+      width: 100%;
+      padding: 16px 0 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-brand svg { display: block; }
+
+    .nav-brand-label {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      font-weight: bold;
+    }
+
+    .nav-item {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--nav-ink);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.65);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      color: var(--nav-active);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      border-radius: 0 2px 2px 0;
+      background: var(--accent);
+    }
+
+    .nav-label {
+      font-size: 8px;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: auto;
+      font-weight: bold;
+    }
+
+    /* ── Screen transitions ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+    }
+    .screen.active { display: flex; }
+    .screen::-webkit-scrollbar { width: 0; }
+
+    main { flex: 1; overflow: hidden; position: relative; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 44px;
+      background: var(--header-bg);
+      color: rgba(255,255,255,0.5);
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+
+    .top-bar .crew-id {
+      color: rgba(255,255,255,0.7);
+      font-weight: bold;
+    }
+
+    .top-bar .mission-clock {
+      color: rgba(255,255,255,0.35);
+    }
+
+    .top-bar .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #E53E3E;
+    }
+
+    /* ── Today Screen ── */
+    .today-screen .screen-body { padding: 16px 24px; }
+
+    .today-header { margin-bottom: 12px; }
+
+    .today-header .mission-day {
+      font-size: 10px;
+      color: var(--ink-light);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      font-weight: bold;
+    }
+
+    .today-header h1 {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.25;
+    }
+
+    .today-cards {
+      display: flex;
+      gap: 6px;
+    }
+
+    .today-card {
+      flex: 1;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 8px;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .today-card .card-label {
+      font-size: 9px;
+      font-weight: bold;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .today-card .card-title {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .today-card .card-desc {
+      font-size: 11px;
+      color: var(--ink-mid);
+      line-height: 1.3;
+    }
+
+    .today-card .card-status {
+      font-size: 10px;
+      margin-top: auto;
+      padding-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: bold;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+    .dot-gray { background: var(--ink-light); }
+
+    /* Dense data dump section */
+    .today-data-dump {
+      margin-top: 8px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+    }
+
+    .today-data-dump h2 {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .data-table {
+      width: 100%;
+      font-size: 10px;
+      border-collapse: collapse;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid var(--border);
+      padding: 3px 6px;
+      text-align: left;
+    }
+
+    .data-table th {
+      background: #E0E0E0;
+      font-weight: bold;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      font-size: 10px;
+    }
+
+    .today-schedule { margin-top: 8px; }
+
+    .today-schedule h2 {
+      font-size: 10px;
+      font-weight: bold;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .schedule-items {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .schedule-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .schedule-item:last-child { border-bottom: none; }
+
+    .schedule-time {
+      font-size: 10px;
+      color: var(--ink-light);
+      width: 44px;
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    .schedule-label {
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .schedule-label.done {
+      color: var(--ink-light);
+      text-decoration: line-through;
+    }
+
+    .tag {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .tag-done { background: #D4EDDA; color: #155724; }
+    .tag-next { background: #FFF3CD; color: #856404; }
+    .tag-alert { background: #F8D7DA; color: #721C24; }
+
+    /* ── Check-In Screen ── */
+    .checkin-screen .screen-body {
+      padding: 12px 20px;
+      display: flex;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .checkin-form {
+      flex: 1;
+    }
+
+    .checkin-sidebar {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .checkin-screen h1 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .checkin-section { margin-bottom: 8px; }
+
+    .checkin-label {
+      font-size: 11px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .checkin-required {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .mood-scale {
+      display: flex;
+      gap: 3px;
+    }
+
+    .mood-option {
+      flex: 1;
+      padding: 6px 2px;
+      text-align: center;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: var(--surface);
+      font-family: inherit;
+      font-size: 10px;
+      color: var(--ink-mid);
+    }
+
+    .mood-option.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .note-field {
+      width: 100%;
+      padding: 6px 8px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 11px;
+      color: var(--ink);
+      resize: none;
+      background: var(--surface);
+      outline: none;
+    }
+
+    .note-field::placeholder { color: var(--ink-light); }
+
+    .checkin-submit {
+      width: 100%;
+      padding: 8px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .checkin-submit:disabled {
+      background: var(--green);
+      cursor: default;
+    }
+
+    .checkin-warning {
+      background: #FFF3CD;
+      border: 2px solid #FFC107;
+      padding: 6px 8px;
+      font-size: 10px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      border-radius: var(--radius-sm);
+      color: #856404;
+    }
+
+    .checkin-privacy {
+      text-align: center;
+      font-size: 10px;
+      color: var(--ink-light);
+      margin-top: 4px;
+    }
+
+    /* ── Sidebar cards ── */
+    .sidebar-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .sidebar-card h3 {
+      font-size: 9px;
+      font-weight: bold;
+      color: var(--ink);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+
+    /* Mood display — plain text instead of ring */
+    .mood-text-display {
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .mood-text-display .mood-number {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .mood-text-display .mood-label {
+      font-size: 10px;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .snapshot-item {
+      text-align: center;
+      padding: 6px 2px;
+      background: #E0E0E0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .snapshot-value {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--ink);
+      margin-bottom: 1px;
+    }
+
+    .snapshot-label {
+      font-size: 8px;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    /* Week mood — dense table */
+    .week-mood-table {
+      width: 100%;
+      font-size: 10px;
+      border-collapse: collapse;
+    }
+
+    .week-mood-table th, .week-mood-table td {
+      border: 1px solid var(--border);
+      padding: 2px 4px;
+      text-align: center;
+    }
+
+    .week-mood-table th {
+      background: #E0E0E0;
+      font-weight: bold;
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .streak-text {
+      font-size: 10px;
+      color: var(--ink-light);
+      margin-top: 4px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .streak-text strong { color: var(--accent); }
+
+    /* ── Restore Screen ── */
+    .restore-screen .screen-body { padding: 12px 24px; }
+
+    .restore-screen h1 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .restore-subtitle {
+      font-size: 11px;
+      color: var(--ink-mid);
+      margin-bottom: 8px;
+    }
+
+    .restore-modes {
+      display: flex;
+      margin-bottom: 8px;
+      background: var(--border);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      width: fit-content;
+    }
+
+    .restore-mode-btn {
+      padding: 5px 14px;
+      border: none;
+      background: none;
+      border-radius: 2px;
+      font-family: inherit;
+      font-size: 11px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .restore-mode-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: bold;
+    }
+
+    /* Plain text list instead of image cards */
+    .soundscape-list {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .soundscape-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .soundscape-list-item:last-child { border-bottom: none; }
+    .soundscape-list-item:hover { background: #E8E8E8; }
+
+    .soundscape-list-item .sl-name {
+      font-weight: bold;
+    }
+
+    .soundscape-list-item .sl-desc {
+      font-size: 10px;
+      color: var(--ink-light);
+      flex: 1;
+      margin-left: 12px;
+    }
+
+    .soundscape-list-item .sl-duration {
+      font-size: 10px;
+      color: var(--ink-light);
+      font-weight: bold;
+    }
+
+    .soundscape-list-item .sl-play {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 2px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 8px;
+      text-transform: uppercase;
+    }
+
+    /* Extra clutter — disclaimers and warnings */
+    .disclaimer-box {
+      background: #FFF3CD;
+      border: 2px solid #FFC107;
+      padding: 8px 10px;
+      margin-top: 8px;
+      font-size: 10px;
+      border-radius: var(--radius-sm);
+      color: #856404;
+      font-weight: bold;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .stats-bar .stat-box {
+      flex: 1;
+      background: #E0E0E0;
+      border: 1px solid var(--border);
+      padding: 6px;
+      text-align: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .stat-box .stat-num {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--ink);
+    }
+
+    .stat-box .stat-label {
+      font-size: 8px;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    /* Breathe mode — plain/clinical */
+    .breathe-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 16px;
+    }
+
+    .breathe-container.active { display: flex; }
+    .soundscape-list.hidden { display: none; }
+
+    .breathe-clinical {
+      width: 160px;
+      height: 160px;
+      border: 4px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      background: var(--surface);
+    }
+
+    .breathe-clinical .breathe-count {
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--ink);
+    }
+
+    .breathe-clinical-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .breathe-timing-text {
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+
+    .breathe-btn {
+      padding: 8px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .breathe-btn.stop { background: var(--ink-mid); }
+
+    /* Immersive Overlay — harsh/minimal */
+    .immersive-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #1A1A1A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .immersive-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .immersive-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+    }
+
+    .immersive-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .immersive-title {
+      font-size: 18px;
+      font-weight: bold;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .immersive-timer {
+      font-size: 48px;
+      font-weight: bold;
+      opacity: 0.55;
+      margin: 28px 0;
+    }
+
+    .immersive-stop {
+      padding: 10px 28px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* Breathing Overlay — plain */
+    .breathe-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #1A1A1A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .breathe-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .breathe-overlay-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+
+    .breathe-overlay-content .breathe-box {
+      width: 180px;
+      height: 180px;
+      border: 4px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      background: #2A2A2A;
+    }
+
+    .breathe-overlay-content .breathe-box .count {
+      font-size: 56px;
+      font-weight: bold;
+      color: #CCC;
+    }
+
+    .breathe-overlay-content .phase-label {
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #AAA;
+      margin-bottom: 4px;
+    }
+
+    .breathe-overlay-content .timing-label {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    /* ── Rhythms Screen ── */
+    .rhythms-screen .screen-body { padding: 12px 24px; }
+
+    .rhythms-screen h1 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* Dense single-column layout */
+    .rhythms-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rhythm-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+    }
+
+    .rhythm-card h2 {
+      font-size: 10px;
+      font-weight: bold;
+      color: var(--ink);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+
+    .sleep-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .sleep-stat .big {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .sleep-stat .unit {
+      font-size: 12px;
+      color: var(--ink-mid);
+      font-weight: bold;
+    }
+
+    .sleep-quality {
+      font-size: 11px;
+      color: var(--ink-mid);
+      margin-top: 4px;
+      font-weight: bold;
+    }
+
+    .sleep-quality .quality-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .quality-options {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .quality-btn {
+      background: none;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 2px 8px;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: bold;
+      color: var(--ink-mid);
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .quality-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+
+    .sleep-log-form {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sleep-log-form label {
+      font-size: 10px;
+      color: var(--ink-mid);
+      font-weight: bold;
+    }
+
+    .sleep-input {
+      width: 44px;
+      padding: 3px 4px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 11px;
+      color: var(--ink);
+      text-align: center;
+      outline: none;
+      font-weight: bold;
+    }
+
+    .sleep-log-save {
+      padding: 4px 10px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* Dense light therapy table */
+    .light-table {
+      width: 100%;
+      font-size: 10px;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+
+    .light-table th, .light-table td {
+      border: 1px solid var(--border);
+      padding: 3px 6px;
+      text-align: left;
+    }
+
+    .light-table th {
+      background: #E0E0E0;
+      font-weight: bold;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .light-table .done-cell { color: var(--green); font-weight: bold; }
+    .light-table .pending-cell { color: var(--amber); font-weight: bold; }
+
+    /* Dense bar chart */
+    .week-bars-dense {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 50px;
+      padding: 0 2px;
+      margin-top: 4px;
+    }
+
+    .week-bar-dense {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 2px;
+    }
+
+    .week-bar-dense .bar {
+      width: 100%;
+      min-height: 3px;
+      background: var(--accent);
+      opacity: 0.5;
+      border-radius: 1px;
+    }
+
+    .week-bar-dense .bar.current { opacity: 0.8; }
+
+    .week-bar-dense .bar-label {
+      font-size: 8px;
+      color: var(--ink-light);
+      font-weight: bold;
+    }
+
+    .rhythm-card .avg {
+      font-size: 10px;
+      color: var(--ink-light);
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+      font-weight: bold;
+    }
+
+    .avg strong { color: var(--ink); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: bold;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-brand">
+        <svg width="34" height="34" viewBox="0 0 30 30" fill="none">
+          <rect x="3" y="3" width="24" height="24" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
+          <line x1="3" y1="15" x2="27" y2="15" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+          <line x1="15" y1="3" x2="15" y2="27" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+          <rect x="12" y="12" width="6" height="6" fill="#E53E3E"/>
+        </svg>
+        <span class="nav-brand-label">CMWS</span>
+      </div>
+
+      <button onclick="showScreen('today')" class="nav-item active" data-screen="today" title="Today">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      </button>
+      <button onclick="showScreen('checkin')" class="nav-item" data-screen="checkin" title="Check-In">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </button>
+      <button onclick="showScreen('restore')" class="nav-item" data-screen="restore" title="Restore">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+      </button>
+      <button onclick="showScreen('rhythms')" class="nav-item" data-screen="rhythms" title="Rhythms">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <span class="nav-label">v1.2</span>
+    </nav>
+
+    <main>
+      <div class="top-bar">
+        <span class="crew-id">SUBJECT: CDR-0247-AK</span>
+        <span class="mission-clock">MET 247:10:14:32</span>
+        <span class="status-indicator">
+          <span class="status-dot"></span>
+          <span>MONITORING ACTIVE</span>
+        </span>
+      </div>
+
+      <!-- TODAY -->
+      <div id="screen-today" class="screen active today-screen">
+        <div class="screen-body">
+          <div class="today-header">
+            <p class="mission-day">DAY 247 — HAB MODULE A — PSYCHOLOGICAL MONITORING SYSTEM</p>
+            <h1>CREW WELLNESS STATUS REPORT</h1>
+          </div>
+
+          <div class="today-cards">
+            <button class="today-card" onclick="showScreen('checkin')">
+              <p class="card-label">ASSESSMENT</p>
+              <p class="card-title">Mandatory Psych Eval</p>
+              <p class="card-desc">Complete required daily psychological assessment. Non-compliance flagged to mission control.</p>
+              <div class="card-status" id="checkin-status" style="color: var(--accent);">
+                <div class="dot" style="background: var(--accent);"></div>
+                <span id="checkin-status-text">INCOMPLETE — REQUIRED</span>
+              </div>
+            </button>
+
+            <button class="today-card" onclick="showScreen('restore')">
+              <p class="card-label">AUDIO STIMULI</p>
+              <p class="card-title">Environmental Audio</p>
+              <p class="card-desc">Prescribed auditory stimulation protocol. Select from approved audio list.</p>
+              <div class="card-status" style="color: var(--ink-light);">
+                <div class="dot dot-gray"></div>
+                No session logged
+              </div>
+            </button>
+
+            <button class="today-card" onclick="showScreen('rhythms')">
+              <p class="card-label">BIOMETRICS</p>
+              <p class="card-title">Sleep Data Entry</p>
+              <p class="card-desc">Log sleep duration and quality. Data transmitted to ground crew for analysis.</p>
+              <div class="card-status" style="color: var(--amber);">
+                <div class="dot dot-amber"></div>
+                Pending input
+              </div>
+            </button>
+          </div>
+
+          <!-- Dense data dump — anti-pattern: information overload -->
+          <div class="today-data-dump">
+            <h2>CREW COMPLIANCE METRICS — CURRENT CYCLE</h2>
+            <table class="data-table">
+              <tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th><th>Variance</th></tr>
+              <tr><td>Check-in completion rate</td><td>100%</td><td>85.7%</td><td style="color:var(--amber);">BELOW TARGET</td><td>-14.3%</td></tr>
+              <tr><td>Avg. sleep duration</td><td>8.0 hrs</td><td>7.04 hrs</td><td style="color:var(--amber);">BELOW TARGET</td><td>-0.96 hrs</td></tr>
+              <tr><td>Audio session usage</td><td>1x daily</td><td>0.43x</td><td style="color:var(--accent);">NON-COMPLIANT</td><td>-57%</td></tr>
+              <tr><td>Light therapy adherence</td><td>3x daily</td><td>2.1x</td><td style="color:var(--amber);">BELOW TARGET</td><td>-30%</td></tr>
+              <tr><td>Psych eval response time</td><td>&lt;5 min</td><td>12.3 min</td><td style="color:var(--accent);">NON-COMPLIANT</td><td>+146%</td></tr>
+            </table>
+          </div>
+
+          <div class="today-schedule">
+            <h2>MANDATORY SCHEDULE</h2>
+            <div class="schedule-items">
+              <div class="schedule-item">
+                <span class="schedule-time">06:30</span>
+                <span class="schedule-label done">Psych assessment #1</span>
+                <span class="tag tag-done">DONE</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">10:00</span>
+                <span class="schedule-label" style="font-weight: bold;">Breathing protocol</span>
+                <span class="tag tag-alert">OVERDUE</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">14:00</span>
+                <span class="schedule-label">Ground crew comms window</span>
+                <span class="tag" style="background:#E0E0E0; color: #666;">PENDING</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">18:30</span>
+                <span class="schedule-label">Light protocol — evening</span>
+                <span class="tag" style="background:#E0E0E0; color: #666;">PENDING</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div id="screen-checkin" class="screen checkin-screen">
+        <div class="screen-body">
+          <div class="checkin-form">
+            <h1>PSYCHOLOGICAL ASSESSMENT</h1>
+
+            <div class="checkin-warning">⚠ WARNING: This assessment is mandatory. Incomplete submissions will be flagged to mission control. All responses are recorded and may be reviewed by ground crew psychologists.</div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">MOOD RATING <span class="checkin-required">* REQUIRED</span></p>
+              <div class="mood-scale" id="mood-scale">
+                <button class="mood-option" onclick="selectMood(this, 1)">1 — Very Low</button>
+                <button class="mood-option" onclick="selectMood(this, 2)">2 — Low</button>
+                <button class="mood-option" onclick="selectMood(this, 3)">3 — Neutral</button>
+                <button class="mood-option selected" onclick="selectMood(this, 4)">4 — Good</button>
+                <button class="mood-option" onclick="selectMood(this, 5)">5 — Great</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">ENERGY LEVEL <span class="checkin-required">* REQUIRED</span></p>
+              <div class="mood-scale" id="energy-scale">
+                <button class="mood-option" onclick="selectEnergy(this, 1)">1 — Exhausted</button>
+                <button class="mood-option" onclick="selectEnergy(this, 2)">2 — Low</button>
+                <button class="mood-option" onclick="selectEnergy(this, 3)">3 — Moderate</button>
+                <button class="mood-option selected" onclick="selectEnergy(this, 4)">4 — Good</button>
+                <button class="mood-option" onclick="selectEnergy(this, 5)">5 — Energized</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">STRESS INDICATOR <span class="checkin-required">* REQUIRED</span></p>
+              <div class="mood-scale" id="stress-scale">
+                <button class="mood-option" onclick="selectStress(this, 1)">1 — Calm</button>
+                <button class="mood-option selected" onclick="selectStress(this, 2)">2 — Mild</button>
+                <button class="mood-option" onclick="selectStress(this, 3)">3 — Moderate</button>
+                <button class="mood-option" onclick="selectStress(this, 4)">4 — High</button>
+                <button class="mood-option" onclick="selectStress(this, 5)">5 — Overwhelmed</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">CLINICAL NOTES <span style="font-weight: normal; color: var(--ink-light); text-transform: none;">(reviewed by ground crew)</span></p>
+              <textarea class="note-field" rows="2" placeholder="Describe current psychological state in detail..."></textarea>
+            </div>
+
+            <button class="checkin-submit" id="checkin-submit" onclick="submitCheckin()">SUBMIT ASSESSMENT</button>
+            <p class="checkin-privacy">All data transmitted to mission control. Responses archived for post-mission review.</p>
+          </div>
+
+          <div class="checkin-sidebar">
+            <div class="sidebar-card">
+              <h3>CURRENT READINGS</h3>
+              <div class="mood-text-display">
+                <div class="mood-number" id="mood-number">4</div>
+                <div class="mood-label" id="mood-label-text">MOOD RATING: GOOD</div>
+              </div>
+              <div class="snapshot-grid">
+                <div class="snapshot-item">
+                  <div class="snapshot-value" id="snap-energy">Good</div>
+                  <div class="snapshot-label">ENERGY</div>
+                </div>
+                <div class="snapshot-item">
+                  <div class="snapshot-value" id="snap-stress">Mild</div>
+                  <div class="snapshot-label">STRESS</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <h3>WEEKLY ASSESSMENT LOG</h3>
+              <table class="week-mood-table">
+                <tr><th>Day</th><th>Mood</th><th>Energy</th><th>Stress</th><th>Status</th></tr>
+                <tr><td>Mon</td><td>4</td><td>4</td><td>2</td><td class="done-cell">✓</td></tr>
+                <tr><td>Tue</td><td>5</td><td>4</td><td>1</td><td class="done-cell">✓</td></tr>
+                <tr><td>Wed</td><td>3</td><td>3</td><td>3</td><td class="done-cell">✓</td></tr>
+                <tr><td>Thu</td><td>4</td><td>4</td><td>2</td><td class="done-cell">✓</td></tr>
+                <tr><td>Fri</td><td>5</td><td>5</td><td>1</td><td class="done-cell">✓</td></tr>
+                <tr><td>Sat</td><td>4</td><td>4</td><td>2</td><td class="done-cell">✓</td></tr>
+                <tr><td>Today</td><td>4</td><td>4</td><td>2</td><td style="color:var(--amber);">—</td></tr>
+              </table>
+              <p class="streak-text"><strong>COMPLIANCE: 85.7%</strong> (6/7 days on time)</p>
+            </div>
+
+            <div class="sidebar-card">
+              <h3>GROUND CREW NOTES</h3>
+              <p style="font-size: 10px; color: var(--ink-mid); line-height: 1.4; font-weight: bold;">PREVIOUS SESSION: Mood=4, Energy=4, Stress=2. Within normal parameters. Continue monitoring. FLAG: Response time exceeded 5-minute target on 3 of last 7 assessments.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESTORE -->
+      <div id="screen-restore" class="screen restore-screen">
+        <div class="screen-body">
+          <h1>AUDITORY STIMULATION PROTOCOL</h1>
+          <p class="restore-subtitle">Select prescribed environmental audio. Usage logged and reported to ground crew.</p>
+
+          <div class="restore-modes">
+            <button class="restore-mode-btn active" onclick="setRestoreMode('soundscape')">Audio Library</button>
+            <button class="restore-mode-btn" onclick="setRestoreMode('breathe')">Breathing Protocol</button>
+          </div>
+
+          <div class="soundscape-list" id="soundscape-grid">
+            <div class="soundscape-list-item" onclick="openImmersive('forest', 'ENV-AUDIO-001: Forest', 600)">
+              <span class="sl-name">ENV-AUDIO-001</span>
+              <span class="sl-desc">Forest precipitation (ambient, 44.1kHz, stereo)</span>
+              <span class="sl-duration">10:00</span>
+              <button class="sl-play">PLAY</button>
+            </div>
+            <div class="soundscape-list-item" onclick="openImmersive('ocean', 'ENV-AUDIO-002: Ocean', 900)">
+              <span class="sl-name">ENV-AUDIO-002</span>
+              <span class="sl-desc">Oceanic wave pattern (ambient, 44.1kHz, stereo)</span>
+              <span class="sl-duration">15:00</span>
+              <button class="sl-play">PLAY</button>
+            </div>
+            <div class="soundscape-list-item" onclick="openImmersive('rain', 'ENV-AUDIO-003: Rain', 600)">
+              <span class="sl-name">ENV-AUDIO-003</span>
+              <span class="sl-desc">Precipitation on glass surface (ambient, 44.1kHz, stereo)</span>
+              <span class="sl-duration">10:00</span>
+              <button class="sl-play">PLAY</button>
+            </div>
+            <div class="soundscape-list-item" onclick="openImmersive('night', 'ENV-AUDIO-004: Night', 1200)">
+              <span class="sl-name">ENV-AUDIO-004</span>
+              <span class="sl-desc">Nocturnal environmental mix (ambient, 44.1kHz, stereo)</span>
+              <span class="sl-duration">20:00</span>
+              <button class="sl-play">PLAY</button>
+            </div>
+          </div>
+
+          <div class="stats-bar">
+            <div class="stat-box"><div class="stat-num">0</div><div class="stat-label">Sessions Today</div></div>
+            <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">This Week</div></div>
+            <div class="stat-box"><div class="stat-num">12</div><div class="stat-label">Total Sessions</div></div>
+            <div class="stat-box"><div class="stat-num">4:32</div><div class="stat-label">Avg Duration</div></div>
+          </div>
+
+          <div class="disclaimer-box">
+            ⚠ NOTICE: Audio stimulation sessions are tracked and reported to mission psychology team. Minimum 1 session per day is required per crew wellness protocol CWP-2024-07. Current compliance: NON-COMPLIANT (0 sessions today).
+          </div>
+
+          <div class="breathe-container" id="breathe-container">
+            <div class="breathe-clinical-label" id="breathe-label-text">BREATHING PROTOCOL — 4-7-8 PATTERN</div>
+            <div class="breathe-clinical">
+              <span class="breathe-count" id="breathe-count">—</span>
+            </div>
+            <p class="breathe-clinical-label" id="breathe-phase-label">READY</p>
+            <p class="breathe-timing-text">Inhale 4s → Hold 7s → Exhale 8s · Prescribed duration: 5 minutes</p>
+            <button class="breathe-btn" id="breathe-btn" onclick="toggleBreathing()">INITIATE PROTOCOL</button>
+
+            <div class="disclaimer-box" style="margin-top: 12px; max-width: 400px;">
+              ⚠ Breathing protocol must be completed in full. Early termination will be logged and flagged to the psychology team.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RHYTHMS -->
+      <div id="screen-rhythms" class="screen rhythms-screen">
+        <div class="screen-body">
+          <h1>CIRCADIAN &amp; BIOMETRIC DATA</h1>
+
+          <div class="rhythms-list">
+            <div class="rhythm-card">
+              <h2>SLEEP LOG — PREVIOUS CYCLE</h2>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="sleep-stat">
+                  <span class="big" id="sleep-duration">7:12</span>
+                  <span class="unit">HRS</span>
+                </div>
+                <div>
+                  <p class="sleep-quality"><span class="quality-dot" id="quality-dot"></span>Quality: <span id="quality-text" style="text-transform: uppercase;">GOOD</span></p>
+                  <div class="quality-options">
+                    <button class="quality-btn" onclick="setQuality('poor', this)">POOR</button>
+                    <button class="quality-btn" onclick="setQuality('fair', this)">FAIR</button>
+                    <button class="quality-btn active" onclick="setQuality('good', this)">GOOD</button>
+                  </div>
+                </div>
+                <div class="sleep-log-form">
+                  <label>Log:</label>
+                  <input type="number" class="sleep-input" id="sleep-hours" value="7" min="0" max="12">
+                  <span style="color: var(--ink-light); font-size: 10px; font-weight: bold;">H</span>
+                  <input type="number" class="sleep-input" id="sleep-mins" value="12" min="0" max="59">
+                  <span style="color: var(--ink-light); font-size: 10px; font-weight: bold;">M</span>
+                  <button class="sleep-log-save" onclick="logSleep()">UPDATE</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="rhythm-card">
+              <h2>LIGHT THERAPY COMPLIANCE</h2>
+              <table class="light-table">
+                <tr><th>Protocol</th><th>Scheduled</th><th>Specification</th><th>Status</th></tr>
+                <tr><td>Morning bright exposure</td><td>06:00</td><td>10,000 lux, 30 min</td><td class="done-cell">COMPLETED</td></tr>
+                <tr><td>Evening dim transition</td><td>18:30</td><td>2700K warm, 45 min</td><td class="pending-cell">PENDING</td></tr>
+                <tr><td>Blue light filter</td><td>20:00</td><td>All screens, until sleep</td><td class="pending-cell">PENDING</td></tr>
+              </table>
+              <p style="font-size: 9px; color: var(--ink-light); margin-top: 4px; font-weight: bold;">COMPLIANCE RATE: 33% (1/3 completed) — TARGET: 100%</p>
+            </div>
+
+            <div class="rhythm-card">
+              <h2>WEEKLY SLEEP DATA</h2>
+              <table class="data-table" style="margin-bottom: 4px;">
+                <tr><th>Day</th><th>Duration</th><th>Quality</th><th>Target Δ</th><th>Notes</th></tr>
+                <tr><td>Mon</td><td>6h 28m</td><td>Fair</td><td style="color:var(--accent);">-1h 32m</td><td>Below target</td></tr>
+                <tr><td>Tue</td><td>7h 30m</td><td>Good</td><td style="color:var(--amber);">-0h 30m</td><td>Near target</td></tr>
+                <tr><td>Wed</td><td>5h 45m</td><td>Poor</td><td style="color:var(--accent);">-2h 15m</td><td>FLAGGED</td></tr>
+                <tr><td>Thu</td><td>6h 48m</td><td>Fair</td><td style="color:var(--accent);">-1h 12m</td><td>Below target</td></tr>
+                <tr><td>Fri</td><td>8h 00m</td><td>Good</td><td style="color:var(--green);">+0h 00m</td><td>On target</td></tr>
+                <tr><td>Sat</td><td>7h 15m</td><td>Good</td><td style="color:var(--amber);">-0h 45m</td><td>Near target</td></tr>
+                <tr><td>Today</td><td id="today-dur-cell">7h 12m</td><td>Good</td><td style="color:var(--amber);">-0h 48m</td><td>Near target</td></tr>
+              </table>
+              <p class="avg">Weekly average: <strong id="week-avg">7h 04m</strong> | Target: 8h 00m | Variance: <strong style="color: var(--accent);">-0h 56m</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Immersive Overlay — no nature imagery, just dark screen with text -->
+  <div class="immersive-overlay" id="immersive-overlay">
+    <div class="immersive-content">
+      <p class="immersive-label">AUDIO PLAYBACK ACTIVE</p>
+      <p class="immersive-title" id="immersive-title"></p>
+      <p class="immersive-timer" id="immersive-timer">10:00</p>
+      <button class="immersive-stop" onclick="closeImmersive()">TERMINATE SESSION</button>
+    </div>
+  </div>
+
+  <!-- Breathing Overlay — plain box with number -->
+  <div class="breathe-overlay" id="breathe-overlay">
+    <div class="breathe-overlay-content">
+      <p class="immersive-label" style="color: #666; margin-bottom: 16px;">BREATHING PROTOCOL — ACTIVE</p>
+      <p class="phase-label" id="breathe-text-immersive">INHALE</p>
+      <div class="breathe-box">
+        <span class="count" id="breathe-phase-time-immersive">4</span>
+      </div>
+      <p class="timing-label">4-7-8 PATTERN · MANDATORY COMPLETION</p>
+      <button class="immersive-stop" onclick="stopBreathing()">TERMINATE PROTOCOL</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── Screen switching ── */
+    function showScreen(name) {
+      const current = document.querySelector('.screen.active');
+      const next = document.getElementById('screen-' + name);
+      if (current === next) return;
+      if (current) current.classList.remove('active');
+      next.classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.screen === name);
+      });
+    }
+
+    /* ── Mood selector ── */
+    function selectMood(el, level) {
+      document.querySelectorAll('#mood-scale .mood-option').forEach(m => {
+        m.classList.remove('selected');
+        m.style.borderColor = '';
+        m.style.background = '';
+        m.style.color = '';
+      });
+      el.classList.add('selected');
+      el.style.borderColor = 'var(--accent)';
+      el.style.background = 'var(--accent-light)';
+      el.style.color = 'var(--accent)';
+      document.getElementById('mood-number').textContent = level;
+      const labels = {1:'VERY LOW',2:'LOW',3:'NEUTRAL',4:'GOOD',5:'GREAT'};
+      document.getElementById('mood-label-text').textContent = 'MOOD RATING: ' + labels[level];
+    }
+
+    /* ── Energy & Stress ── */
+    function selectEnergy(btn, val) {
+      document.querySelectorAll('#energy-scale .mood-option').forEach(b => {
+        b.classList.remove('selected');
+        b.style.borderColor = '';
+        b.style.background = '';
+        b.style.color = '';
+      });
+      btn.classList.add('selected');
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.background = 'var(--accent-light)';
+      btn.style.color = 'var(--accent)';
+      const labels = {1:'Exhausted',2:'Low',3:'Moderate',4:'Good',5:'Energized'};
+      const snap = document.getElementById('snap-energy');
+      snap.textContent = labels[val];
+      snap.style.color = 'var(--accent)';
+    }
+
+    function selectStress(btn, val) {
+      document.querySelectorAll('#stress-scale .mood-option').forEach(b => {
+        b.classList.remove('selected');
+        b.style.borderColor = '';
+        b.style.background = '';
+        b.style.color = '';
+      });
+      btn.classList.add('selected');
+      btn.style.borderColor = 'var(--accent)';
+      btn.style.background = 'var(--accent-light)';
+      btn.style.color = 'var(--accent)';
+      const labels = {1:'Calm',2:'Mild',3:'Moderate',4:'High',5:'Overwhelmed'};
+      const snap = document.getElementById('snap-stress');
+      snap.textContent = labels[val];
+      snap.style.color = 'var(--accent)';
+    }
+
+    // Apply initial selections
+    document.querySelector('#mood-scale .mood-option.selected')?.click();
+    document.querySelector('#energy-scale .mood-option.selected')?.click();
+    document.querySelector('#stress-scale .mood-option.selected')?.click();
+
+    /* ── Submit ── */
+    function submitCheckin() {
+      const btn = document.getElementById('checkin-submit');
+      btn.disabled = true;
+      btn.textContent = 'SUBMITTED';
+      showToast('ASSESSMENT RECORDED');
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'SUBMIT ASSESSMENT';
+      }, 3000);
+    }
+
+    /* ── Restore modes ── */
+    function setRestoreMode(mode) {
+      const btns = document.querySelectorAll('.restore-mode-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (mode === 'breathe') {
+        btns[1].classList.add('active');
+      } else {
+        btns[0].classList.add('active');
+      }
+      const grid = document.getElementById('soundscape-grid');
+      const breathe = document.getElementById('breathe-container');
+      if (mode === 'breathe') {
+        grid.classList.add('hidden');
+        breathe.classList.add('active');
+        document.querySelectorAll('.stats-bar, .disclaimer-box').forEach(el => {
+          if (el.closest('.breathe-container')) return;
+          el.style.display = 'none';
+        });
+      } else {
+        grid.classList.remove('hidden');
+        breathe.classList.remove('active');
+        document.querySelectorAll('.stats-bar, .disclaimer-box').forEach(el => {
+          el.style.display = '';
+        });
+      }
+    }
+
+    /* ── Immersive overlay ── */
+    let timerInterval;
+
+    function openImmersive(type, title, duration) {
+      const overlay = document.getElementById('immersive-overlay');
+      document.getElementById('immersive-title').textContent = title;
+      overlay.classList.add('active');
+      let seconds = duration;
+      updateTimer(seconds);
+      timerInterval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) { closeImmersive(); return; }
+        updateTimer(seconds);
+      }, 1000);
+    }
+
+    function updateTimer(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      document.getElementById('immersive-timer').textContent =
+        m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function closeImmersive() {
+      document.getElementById('immersive-overlay').classList.remove('active');
+      clearInterval(timerInterval);
+    }
+
+    /* ── Breathing ── */
+    let breathingActive = false;
+    let breatheInterval;
+    let breatheTimeout;
+
+    function toggleBreathing() {
+      if (breathingActive) {
+        stopBreathing();
+      } else {
+        startBreathing();
+      }
+    }
+
+    function startBreathing() {
+      breathingActive = true;
+      document.getElementById('breathe-overlay').classList.add('active');
+      runBreatheCycle();
+    }
+
+    function stopBreathing() {
+      breathingActive = false;
+      clearInterval(breatheInterval);
+      clearTimeout(breatheTimeout);
+      document.getElementById('breathe-overlay').classList.remove('active');
+      document.getElementById('breathe-text-immersive').textContent = 'INHALE';
+      document.getElementById('breathe-phase-time-immersive').textContent = '—';
+      document.getElementById('breathe-count').textContent = '—';
+      document.getElementById('breathe-phase-label').textContent = 'READY';
+      const btn = document.getElementById('breathe-btn');
+      btn.textContent = 'INITIATE PROTOCOL';
+      btn.classList.remove('stop');
+    }
+
+    function runBreatheCycle() {
+      if (!breathingActive) return;
+      breathePhase('INHALE', 4, () => {
+        breathePhase('HOLD', 7, () => {
+          breathePhase('EXHALE', 8, () => {
+            runBreatheCycle();
+          });
+        });
+      });
+    }
+
+    function breathePhase(label, duration, next) {
+      if (!breathingActive) return;
+      document.getElementById('breathe-text-immersive').textContent = label;
+      document.getElementById('breathe-phase-label').textContent = label;
+
+      let remaining = duration;
+      document.getElementById('breathe-phase-time-immersive').textContent = remaining;
+      document.getElementById('breathe-count').textContent = remaining;
+
+      breatheInterval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(breatheInterval);
+          return;
+        }
+        document.getElementById('breathe-phase-time-immersive').textContent = remaining;
+        document.getElementById('breathe-count').textContent = remaining;
+      }, 1000);
+
+      breatheTimeout = setTimeout(() => {
+        clearInterval(breatheInterval);
+        if (breathingActive) next();
+      }, duration * 1000);
+    }
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    /* ── Mission clock ── */
+    function updateMissionClock() {
+      const clocks = document.querySelectorAll('.mission-clock');
+      const now = new Date();
+      const h = String(now.getUTCHours()).padStart(2, '0');
+      const m = String(now.getUTCMinutes()).padStart(2, '0');
+      const s = String(now.getUTCSeconds()).padStart(2, '0');
+      clocks.forEach(c => c.textContent = 'MET 247:' + h + ':' + m + ':' + s);
+    }
+    setInterval(updateMissionClock, 1000);
+    updateMissionClock();
+
+    /* ── Sleep quality ── */
+    const qualityColors = { poor: 'var(--accent)', fair: 'var(--amber)', good: 'var(--green)' };
+
+    function setQuality(level, btn) {
+      document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('quality-text').textContent = level.toUpperCase();
+      document.getElementById('quality-dot').style.background = qualityColors[level];
+    }
+
+    /* ── Log sleep ── */
+    function logSleep() {
+      const h = parseInt(document.getElementById('sleep-hours').value) || 0;
+      const m = parseInt(document.getElementById('sleep-mins').value) || 0;
+      document.getElementById('sleep-duration').textContent = h + ':' + String(m).padStart(2, '0');
+      if (document.getElementById('today-dur-cell')) {
+        document.getElementById('today-dur-cell').textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
+      }
+      showToast('SLEEP DATA UPDATED');
+    }
+
+    /* ── URL param routing ── */
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get('screen');
+      if (p && document.getElementById('screen-' + p)) showScreen(p);
+
+      const mood = params.get('mood');
+      if (mood) {
+        const idx = parseInt(mood) - 1;
+        const btns = document.querySelectorAll('#mood-scale .mood-option');
+        if (btns[idx]) selectMood(btns[idx], parseInt(mood));
+      }
+      const energy = params.get('energy');
+      if (energy) {
+        const idx = parseInt(energy) - 1;
+        const btns = document.querySelectorAll('#energy-scale .mood-option');
+        if (btns[idx]) selectEnergy(btns[idx], parseInt(energy));
+      }
+      const stress = params.get('stress');
+      if (stress) {
+        const idx = parseInt(stress) - 1;
+        const btns = document.querySelectorAll('#stress-scale .mood-option');
+        if (btns[idx]) selectStress(btns[idx], parseInt(stress));
+      }
+
+      const mode = params.get('mode');
+      if (mode === 'breathe') setRestoreMode('breathe');
+
+      const immersive = params.get('immersive');
+      if (immersive) {
+        const titles = { forest: 'ENV-AUDIO-001: Forest', ocean: 'ENV-AUDIO-002: Ocean', rain: 'ENV-AUDIO-003: Rain', night: 'ENV-AUDIO-004: Night' };
+        const overlay = document.getElementById('immersive-overlay');
+        document.getElementById('immersive-title').textContent = titles[immersive] || 'AUDIO PLAYBACK';
+        document.getElementById('immersive-timer').textContent = '8:42';
+        overlay.classList.add('active');
+      }
+
+      const breathing = params.get('breathing');
+      if (breathing === 'active') {
+        const overlay = document.getElementById('breathe-overlay');
+        overlay.classList.add('active');
+        document.getElementById('breathe-text-immersive').textContent = 'INHALE';
+        document.getElementById('breathe-phase-time-immersive').textContent = '4';
+      }
+
+      const quality = params.get('quality');
+      if (quality) {
+        const btn = [...document.querySelectorAll('.quality-btn')].find(b => b.textContent.trim().toLowerCase() === quality);
+        if (btn) setQuality(quality, btn);
+      }
+
+      const sleepH = params.get('sleephours');
+      const sleepM = params.get('sleepmins');
+      if (sleepH || sleepM) {
+        if (sleepH) document.getElementById('sleep-hours').value = sleepH;
+        if (sleepM) document.getElementById('sleep-mins').value = sleepM;
+        logSleep();
+      }
+    })();
+  </script>
+</body>
+</html>

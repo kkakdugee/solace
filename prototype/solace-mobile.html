@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=390">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <title>Solace — NASA Crew Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #E9ECF2;
+      --surface: #FFFFFF;
+      --border: #CDD3DE;
+      --border-light: #DFE3EB;
+      --ink: #0E1219;
+      --ink-mid: #4A5168;
+      --ink-light: #7E8599;
+      --nasa-blue: #0B3D91;
+      --nasa-red: #FC3D21;
+      --accent: #105DC8;
+      --accent-soft: #2970D6;
+      --accent-light: #E4EDF9;
+      --green: #0F7B4A;
+      --green-light: #E2F4EB;
+      --amber: #C07A00;
+      --amber-light: #FFF5DC;
+      --nav-bg: #070D1A;
+      --nav-ink: rgba(255,255,255,0.4);
+      --nav-active: rgba(255,255,255,0.92);
+      --header-bg: #0B1426;
+      --shadow-sm: 0 1px 3px rgba(7,13,26,0.06), 0 1px 2px rgba(7,13,26,0.04);
+      --shadow-md: 0 3px 10px rgba(7,13,26,0.08), 0 1px 3px rgba(7,13,26,0.05);
+      --shadow-lg: 0 6px 20px rgba(7,13,26,0.1), 0 2px 6px rgba(7,13,26,0.06);
+      --radius: 10px;
+      --radius-sm: 7px;
+    }
+
+    html, body {
+      width: 390px;
+      height: 844px;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      width: 390px;
+      height: 844px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* ── Navigation (bottom tab bar) ── */
+    nav {
+      width: 100%;
+      height: 56px;
+      background: var(--nav-bg);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0;
+      gap: 0;
+      flex-shrink: 0;
+      order: 2;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-brand {
+      display: none;
+    }
+
+    .nav-brand svg { display: block; }
+
+    .nav-brand-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .nav-item {
+      width: 48px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--nav-ink);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.65);
+    }
+
+    .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      color: var(--nav-active);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
+      border-radius: 0 0 2px 2px;
+      background: var(--nasa-red);
+    }
+
+    .nav-label {
+      display: none;
+    }
+
+    /* ── Screen transitions ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .screen.active { display: flex; }
+
+    .screen-body {
+      animation: screen-in 1s ease forwards;
+    }
+    .screen::-webkit-scrollbar { width: 0; }
+
+    @keyframes screen-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    main { flex: 1; overflow: hidden; position: relative; order: 1; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 40px;
+      background: var(--header-bg);
+      color: rgba(255,255,255,0.5);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+
+    .top-bar .crew-id {
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+
+    .top-bar .mission-clock {
+      color: rgba(255,255,255,0.35);
+    }
+
+    .top-bar .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2ECC71;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Today Screen ── */
+    .today-screen .screen-body { padding: 20px 16px; }
+
+    .today-header { margin-bottom: 20px; }
+
+    .today-header .mission-day {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-light);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .today-header h1 {
+      font-size: 26px;
+      font-weight: 300;
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+    }
+
+    .today-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .today-card {
+      flex: 1;
+      background: var(--surface);
+      border: none;
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .today-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+    }
+
+    .today-card:nth-child(1)::before { background: var(--accent); }
+    .today-card:nth-child(2)::before { background: var(--green); }
+    .today-card:nth-child(3)::before { background: var(--amber); }
+
+    .today-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .today-card .card-label {
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .today-card .card-title {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .today-card .card-desc {
+      font-size: 13px;
+      color: var(--ink-mid);
+      line-height: 1.45;
+    }
+
+    .today-card .card-status {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      margin-top: auto;
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+    .dot-gray { background: var(--ink-light); }
+
+    .today-schedule { margin-top: 18px; }
+
+    .today-schedule h2 {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .schedule-items {
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .schedule-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .schedule-item:last-child { border-bottom: none; }
+
+    .schedule-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-light);
+      width: 52px;
+      flex-shrink: 0;
+    }
+
+    .schedule-label {
+      font-size: 13px;
+      flex: 1;
+    }
+
+    .schedule-label.done {
+      color: var(--ink-light);
+      text-decoration: line-through;
+      text-decoration-color: var(--border);
+    }
+
+    .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .tag-done { background: var(--green-light); color: var(--green); }
+    .tag-next { background: var(--amber-light); color: var(--amber); }
+
+    /* ── Check-In Screen ── */
+    .checkin-screen .screen-body {
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .checkin-form {
+      flex: none;
+    }
+
+    .checkin-sidebar {
+      width: 100%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .checkin-sidebar .sidebar-card:last-child {
+    }
+
+    .checkin-screen h1 {
+      font-size: 22px;
+      font-weight: 300;
+      margin-bottom: 16px;
+    }
+
+    .checkin-section { margin-bottom: 18px; }
+
+    .checkin-label {
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-mid);
+    }
+
+    .mood-scale {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mood-option {
+      flex: 1;
+      padding: 9px 2px;
+      text-align: center;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: var(--surface);
+      font-family: inherit;
+      font-size: 11px;
+      color: var(--ink-mid);
+      transition: all 0.15s;
+      min-height: 40px;
+    }
+
+    .mood-option:hover {
+      border-color: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    .mood-option.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+
+    .note-field {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      resize: none;
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .note-field::placeholder { color: var(--ink-light); }
+    .note-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(16,93,200,0.08);
+    }
+
+    .checkin-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--nasa-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      min-height: 44px;
+      transition: all 0.15s;
+      margin-top: 4px;
+    }
+
+    .checkin-submit:hover { background: #093278; }
+    .checkin-submit:disabled {
+      background: var(--green);
+      cursor: default;
+    }
+
+    .checkin-privacy {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 8px;
+    }
+
+    /* ── Sidebar cards ── */
+    .sidebar-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-card h3 {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    /* Live mood ring */
+    .mood-ring-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0 4px;
+    }
+
+    .mood-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent-light) 0deg, var(--accent) 120deg, var(--accent-light) 240deg, var(--accent-light) 360deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.6s ease;
+      margin-bottom: 10px;
+    }
+
+    .mood-ring-inner {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mood-ring-label {
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--ink);
+      transition: color 0.3s;
+    }
+
+    .mood-ring-sublabel {
+      font-size: 11px;
+      color: var(--ink-light);
+    }
+
+    /* Snapshot readouts */
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .snapshot-item {
+      text-align: center;
+      padding: 10px 4px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+
+    .snapshot-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .snapshot-label {
+      font-size: 10px;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Week mood list */
+    .week-mood-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .week-mood-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .week-mood-day {
+      width: 36px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-light);
+    }
+
+    .week-mood-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .week-mood-val {
+      color: var(--ink-mid);
+      font-size: 12px;
+    }
+
+    .week-mood-row.current-row .week-mood-day {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .week-mood-row.current-row .week-mood-val {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .streak-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .streak-text strong { color: var(--accent); }
+
+    /* ── Restore Screen ── */
+    .restore-screen .screen-body { padding: 20px 16px; }
+
+    .restore-screen h1 {
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 4px;
+    }
+
+    .restore-subtitle {
+      font-size: 13px;
+      color: var(--ink-mid);
+      margin-bottom: 18px;
+    }
+
+    .restore-modes {
+      display: flex;
+      margin-bottom: 14px;
+      background: var(--border);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      width: fit-content;
+    }
+
+    .restore-mode-btn {
+      padding: 8px 20px;
+      border: none;
+      background: none;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .restore-mode-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .soundscape-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .soundscape-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .soundscape-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .soundscape-img {
+      width: 100%;
+      height: 100px;
+      display: block;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .soundscape-img.forest {
+      background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&h=400&fit=crop');
+      background-color: #1E4A1E;
+    }
+    .soundscape-img.ocean {
+      background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=400&fit=crop');
+      background-color: #1A3B5A;
+    }
+    .soundscape-img.rain {
+      background-image: url('https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800&h=400&fit=crop');
+      background-color: #2A3A4A;
+    }
+    .soundscape-img.night {
+      background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&h=400&fit=crop');
+      background-color: #0D0D1F;
+    }
+
+    .soundscape-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.4));
+    }
+
+    .soundscape-info {
+      padding: 12px 14px;
+    }
+
+    .soundscape-info h3 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .soundscape-info p {
+      font-size: 12px;
+      color: var(--ink-mid);
+    }
+
+    .soundscape-info .duration {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 4px;
+    }
+
+    /* Breathe mode */
+    .breathe-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 32px;
+    }
+
+    .breathe-container.active { display: flex; }
+    .soundscape-grid.hidden { display: none; }
+
+    .breathe-ring {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      transition: transform 1s ease-in-out, border-color 0.5s;
+      position: relative;
+    }
+
+    .breathe-ring.inhale { transform: scale(1); border-color: var(--accent-soft); }
+    .breathe-ring.hold   { transform: scale(1); border-color: var(--accent); }
+    .breathe-ring.exhale { transform: scale(0.78); border-color: var(--border); }
+    .breathe-ring.idle   { transform: scale(0.78); }
+
+    .breathe-ring::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      transition: box-shadow 1s, border-color 0.5s;
+    }
+
+    .breathe-ring.inhale::before,
+    .breathe-ring.hold::before {
+      box-shadow: 0 0 24px rgba(16,93,200,0.1);
+      border-color: rgba(16,93,200,0.12);
+    }
+
+    .breathe-inner {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 1s ease-in-out;
+    }
+
+    .breathe-ring.inhale .breathe-inner { transform: scale(1); }
+    .breathe-ring.hold .breathe-inner   { transform: scale(1); }
+    .breathe-ring.exhale .breathe-inner  { transform: scale(0.75); }
+    .breathe-ring.idle .breathe-inner    { transform: scale(0.75); }
+
+    .breathe-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .breathe-phase-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--ink-mid);
+      margin-bottom: 6px;
+    }
+
+    .breathe-timing {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--ink-light);
+      margin-bottom: 24px;
+    }
+
+    .breathe-btn {
+      padding: 10px 32px;
+      background: var(--nasa-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: all 0.15s;
+    }
+
+    .breathe-btn:hover { background: #093278; }
+    .breathe-btn.stop { background: var(--ink-mid); }
+
+    /* ── Breathing Immersive Overlay ── */
+    .breathe-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #040608;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    .breathe-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .breathe-overlay-bg {
+      position: absolute;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(16,93,200,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(15,123,74,0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(11,61,145,0.12) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 20%, rgba(41,112,214,0.08) 0%, transparent 45%),
+        linear-gradient(180deg, #050A14 0%, #080E1A 50%, #040608 100%);
+      animation: breathe-bg-drift 25s ease-in-out infinite alternate;
+    }
+
+    @keyframes breathe-bg-drift {
+      0% { transform: translate(0%, 0%) rotate(0deg); }
+      25% { transform: translate(5%, -3%) rotate(2deg); }
+      50% { transform: translate(-3%, 5%) rotate(-1deg); }
+      75% { transform: translate(4%, 2%) rotate(1.5deg); }
+      100% { transform: translate(-2%, -4%) rotate(-2deg); }
+    }
+
+    .breathe-overlay-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .breathe-overlay-content .breathe-ring {
+      border-color: rgba(255,255,255,0.15);
+      margin-bottom: 32px;
+      width: 180px;
+      height: 180px;
+    }
+
+    .breathe-inner-immersive {
+      background: rgba(16,93,200,0.12) !important;
+    }
+
+    .breathe-text-immersive {
+      color: rgba(255,255,255,0.85) !important;
+      font-size: 17px !important;
+    }
+
+    .breathe-overlay-content .breathe-ring.inhale { border-color: rgba(41,112,214,0.4); }
+    .breathe-overlay-content .breathe-ring.hold   { border-color: rgba(41,112,214,0.55); }
+    .breathe-overlay-content .breathe-ring.exhale { border-color: rgba(255,255,255,0.1); }
+
+    .breathe-overlay-content .breathe-ring.inhale::before,
+    .breathe-overlay-content .breathe-ring.hold::before {
+      box-shadow: 0 0 40px rgba(16,93,200,0.15);
+      border-color: rgba(16,93,200,0.2);
+    }
+
+    .breathe-overlay-content .breathe-ring.inhale .breathe-inner-immersive {
+      background: rgba(16,93,200,0.18) !important;
+    }
+    .breathe-overlay-content .breathe-ring.hold .breathe-inner-immersive {
+      background: rgba(16,93,200,0.22) !important;
+    }
+
+    .breathe-phase-time-immersive {
+      color: rgba(255,255,255,0.5) !important;
+      font-size: 36px !important;
+    }
+
+    .breathe-timing-immersive {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 28px;
+    }
+
+    /* ── Immersive Overlay ── */
+    .immersive-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #040608;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .immersive-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .immersive-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.5;
+      animation: immersive-drift 30s ease-in-out infinite alternate;
+      filter: brightness(0.7) saturate(1.1);
+    }
+
+    .immersive-bg.forest {
+      background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&h=1000&fit=crop');
+      background-color: #0E250E;
+    }
+    .immersive-bg.ocean {
+      background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&h=1000&fit=crop');
+      background-color: #081A2E;
+    }
+    .immersive-bg.rain {
+      background-image: url('https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=1600&h=1000&fit=crop');
+      background-color: #0E1A1E;
+    }
+    .immersive-bg.night {
+      background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&h=1000&fit=crop');
+      background-color: #08081A;
+    }
+
+    @keyframes immersive-drift {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .immersive-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      animation: float-up 12s linear infinite;
+    }
+
+    .particle:nth-child(1) { left: 12%; animation-duration: 15s; }
+    .particle:nth-child(2) { left: 28%; animation-duration: 12s; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 45%; animation-duration: 18s; animation-delay: 5s; }
+    .particle:nth-child(4) { left: 62%; animation-duration: 14s; animation-delay: 1s; }
+    .particle:nth-child(5) { left: 78%; animation-duration: 16s; animation-delay: 3s; }
+    .particle:nth-child(6) { left: 35%; animation-duration: 13s; animation-delay: 7s; width: 1px; height: 1px; }
+
+    @keyframes float-up {
+      0% { bottom: -4%; opacity: 0; }
+      8% { opacity: 0.2; }
+      92% { opacity: 0.05; }
+      100% { bottom: 104%; opacity: 0; }
+    }
+
+    .immersive-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+    }
+
+    .immersive-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      margin-bottom: 8px;
+    }
+
+    .immersive-title {
+      font-size: 20px;
+      font-weight: 300;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .immersive-timer {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 44px;
+      font-weight: 300;
+      opacity: 0.55;
+      margin: 28px 0;
+    }
+
+    .immersive-stop {
+      padding: 12px 32px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 44px;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .immersive-stop:hover {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── Rhythms Screen ── */
+    .rhythms-screen .screen-body { padding: 20px 16px; overflow-y: auto; }
+
+    .rhythms-screen h1 {
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .rhythms-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .rhythm-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rhythm-card h2 {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .sleep-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .sleep-stat .big {
+      font-size: 34px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+
+    .sleep-stat .unit {
+      font-size: 14px;
+      color: var(--ink-mid);
+    }
+
+    .sleep-quality {
+      font-size: 13px;
+      color: var(--ink-mid);
+      margin-top: 6px;
+    }
+
+    .sleep-quality .quality-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .sleep-note {
+      font-size: 12px;
+      color: var(--ink-light);
+      margin-top: 12px;
+      font-style: italic;
+      line-height: 1.5;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .timeline {
+      position: relative;
+      height: 32px;
+      background: var(--bg);
+      border-radius: 5px;
+      margin: 12px 0 6px;
+      overflow: hidden;
+    }
+
+    .timeline-block {
+      position: absolute;
+      top: 4px;
+      height: calc(100% - 8px);
+      border-radius: 3px;
+    }
+
+    .timeline-sleep { background: var(--accent); opacity: 0.2; }
+    .timeline-light { background: var(--amber); opacity: 0.25; }
+    .timeline-now {
+      width: 2px;
+      background: var(--nasa-red);
+      z-index: 1;
+      top: 0;
+      height: 100%;
+      border-radius: 0;
+    }
+
+    .timeline-now::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--nasa-red);
+    }
+
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-light);
+    }
+
+    .timeline-legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--ink-light);
+    }
+
+    .legend-swatch {
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+    }
+
+    .legend-swatch.sleep { background: var(--accent); opacity: 0.3; }
+    .legend-swatch.light { background: var(--amber); opacity: 0.35; }
+    .legend-swatch.now { background: var(--nasa-red); }
+
+    .light-schedule {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .light-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .light-item:hover { opacity: 0.8; }
+    .light-item:last-child { border-bottom: none; }
+    .light-item.completed .name { color: var(--ink-light); text-decoration: line-through; text-decoration-color: var(--border); }
+
+    .light-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .light-icon.bright { background: var(--amber-light); }
+    .light-icon.dim { background: var(--accent-light); }
+    .light-icon.filter { background: var(--bg); }
+
+    .light-info { flex: 1; }
+    .light-info .name { font-size: 13px; }
+    .light-info .time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 1px;
+    }
+
+    .week-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 80px;
+      padding: 0 2px;
+    }
+
+    .week-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 5px;
+      position: relative;
+    }
+
+    .week-bar {
+      width: 100%;
+      min-height: 4px;
+      background: var(--accent);
+      opacity: 0.35;
+      border-radius: 3px;
+      transition: opacity 0.15s, height 0.4s ease;
+      position: relative;
+    }
+
+    .week-bar.current { opacity: 0.7; }
+    .week-bar-group:hover .week-bar { opacity: 0.6; }
+    .week-bar-group:hover .week-bar.current { opacity: 0.85; }
+
+    .week-bar-value {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-mid);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+    }
+
+    .week-bar-group:hover .week-bar-value { opacity: 1; }
+
+    .week-bar-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: var(--ink-light);
+      flex-shrink: 0;
+    }
+
+    .week-bar-label.current { color: var(--accent); font-weight: 500; }
+
+    .rhythm-card .avg {
+      font-size: 12px;
+      color: var(--ink-light);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .avg strong { color: var(--ink-mid); font-weight: 500; }
+
+    /* Sleep quality selector */
+    .quality-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-left: 2px;
+    }
+    .quality-btn:hover { border-color: var(--accent-soft); color: var(--ink); }
+    .quality-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 500; }
+
+    .quality-options {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    /* Log sleep modal */
+    .sleep-log-form {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .sleep-log-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .sleep-log-row label {
+      font-size: 12px;
+      color: var(--ink-mid);
+      width: 50px;
+      flex-shrink: 0;
+    }
+
+    .sleep-input {
+      width: 56px;
+      padding: 6px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--ink);
+      text-align: center;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .sleep-input:focus { border-color: var(--accent); }
+
+    .sleep-log-save {
+      padding: 8px 18px;
+      background: var(--nasa-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 4px;
+    }
+
+    .sleep-log-save:hover { background: #093278; }
+
+    /* ── Toast notification ── */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: var(--nav-bg);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast svg { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Navigation -->
+    <nav>
+      <div class="nav-brand">
+        <svg width="34" height="34" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="15" r="13" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+          <ellipse cx="15" cy="15" rx="13" ry="5.5" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" transform="rotate(-35 15 15)"/>
+          <ellipse cx="15" cy="15" rx="13" ry="5.5" stroke="rgba(255,255,255,0.25)" stroke-width="0.8" transform="rotate(35 15 15)"/>
+          <circle cx="15" cy="15" r="2.5" fill="#FC3D21"/>
+        </svg>
+        <span class="nav-brand-label">Solace</span>
+      </div>
+
+      <button onclick="showScreen('today')" class="nav-item active" data-screen="today" title="Today">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      </button>
+      <button onclick="showScreen('checkin')" class="nav-item" data-screen="checkin" title="Check-In">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </button>
+      <button onclick="showScreen('restore')" class="nav-item" data-screen="restore" title="Restore">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+      </button>
+      <button onclick="showScreen('rhythms')" class="nav-item" data-screen="rhythms" title="Rhythms">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <span class="nav-label">v1.2</span>
+    </nav>
+
+    <main>
+      <div class="top-bar">
+        <span class="crew-id">CDR Aaron Kim</span>
+        <span class="mission-clock">MET 247:10:14:32</span>
+      </div>
+
+      <!-- TODAY -->
+      <div id="screen-today" class="screen active today-screen">
+        <div class="screen-body">
+          <div class="today-header">
+            <p class="mission-day">Sol 247 &mdash; Hab Module A</p>
+            <h1>Good morning</h1>
+          </div>
+
+          <div class="today-cards">
+            <button class="today-card" onclick="showScreen('checkin')">
+              <p class="card-label">Check-In</p>
+              <p class="card-title">Daily check-in</p>
+              <p class="card-desc">30 seconds. Private by default — your data, your choice.</p>
+              <div class="card-status" id="checkin-status" style="color: var(--ink-light);">
+                <div class="dot dot-gray" id="checkin-dot"></div>
+                <span id="checkin-status-text">Not completed</span>
+              </div>
+            </button>
+
+            <button class="today-card" onclick="showScreen('restore')">
+              <p class="card-label">Restore</p>
+              <p class="card-title">Take a break</p>
+              <p class="card-desc">Nature sounds from Earth. Breathe, listen, decompress.</p>
+              <div class="card-status" style="color: var(--ink-light);">
+                <div class="dot dot-gray"></div>
+                No session today
+              </div>
+            </button>
+
+            <button class="today-card" onclick="showScreen('rhythms')">
+              <p class="card-label">Rhythms</p>
+              <p class="card-title">Sleep &amp; light</p>
+              <p class="card-desc">Track sleep and light therapy to keep your rhythm steady.</p>
+              <div class="card-status" style="color: var(--amber);">
+                <div class="dot dot-amber"></div>
+                Evening dim at 18:30
+              </div>
+            </button>
+          </div>
+
+          <div class="today-schedule">
+            <h2>Schedule</h2>
+            <div class="schedule-items">
+              <div class="schedule-item">
+                <span class="schedule-time">06:30</span>
+                <span class="schedule-label done">Morning check-in</span>
+                <span class="tag tag-done">done</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">10:00</span>
+                <span class="schedule-label" style="font-weight: 500;">Guided breathing</span>
+                <span class="tag tag-next">next</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">14:00</span>
+                <span class="schedule-label" style="color: var(--ink-mid);">Earth contact window</span>
+              </div>
+              <div class="schedule-item">
+                <span class="schedule-time">18:30</span>
+                <span class="schedule-label" style="color: var(--ink-mid);">Evening light shift</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHECK-IN -->
+      <div id="screen-checkin" class="screen checkin-screen">
+        <div class="screen-body">
+          <div class="checkin-form">
+            <h1>How are you feeling?</h1>
+
+            <div class="checkin-section">
+              <p class="checkin-label">Mood</p>
+              <div class="mood-scale" id="mood-scale">
+                <button class="mood-option" onclick="selectMood(this, 1)">Very low</button>
+                <button class="mood-option" onclick="selectMood(this, 2)">Low</button>
+                <button class="mood-option" onclick="selectMood(this, 3)">Neutral</button>
+                <button class="mood-option selected" onclick="selectMood(this, 4)">Good</button>
+                <button class="mood-option" onclick="selectMood(this, 5)">Great</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">Energy</p>
+              <div class="mood-scale" id="energy-scale">
+                <button class="mood-option" onclick="selectEnergy(this, 1)">Exhausted</button>
+                <button class="mood-option" onclick="selectEnergy(this, 2)">Low</button>
+                <button class="mood-option" onclick="selectEnergy(this, 3)">Moderate</button>
+                <button class="mood-option selected" onclick="selectEnergy(this, 4)">Good</button>
+                <button class="mood-option" onclick="selectEnergy(this, 5)">Energized</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">Stress</p>
+              <div class="mood-scale" id="stress-scale">
+                <button class="mood-option" onclick="selectStress(this, 1)">Calm</button>
+                <button class="mood-option selected" onclick="selectStress(this, 2)">Mild</button>
+                <button class="mood-option" onclick="selectStress(this, 3)">Moderate</button>
+                <button class="mood-option" onclick="selectStress(this, 4)">High</button>
+                <button class="mood-option" onclick="selectStress(this, 5)">Overwhelmed</button>
+              </div>
+            </div>
+
+            <div class="checkin-section">
+              <p class="checkin-label">Notes <span style="font-weight: 400; color: var(--ink-light); text-transform: none; letter-spacing: 0;">optional</span></p>
+              <textarea class="note-field" rows="2" placeholder="Anything on your mind..."></textarea>
+            </div>
+
+            <button class="checkin-submit" id="checkin-submit" onclick="submitCheckin()">Submit check-in</button>
+            <p class="checkin-privacy">Private by default. You choose what to share.</p>
+          </div>
+
+          <div class="checkin-sidebar">
+            <div class="sidebar-card">
+              <h3>Current snapshot</h3>
+              <div class="mood-ring-container">
+                <div class="mood-ring" id="mood-ring">
+                  <div class="mood-ring-inner">
+                    <span class="mood-ring-label" id="mood-ring-label">4</span>
+                  </div>
+                </div>
+                <span class="mood-ring-sublabel" id="mood-ring-sublabel">Mood: Good</span>
+              </div>
+              <div class="snapshot-grid">
+                <div class="snapshot-item">
+                  <div class="snapshot-value" id="snap-energy">Good</div>
+                  <div class="snapshot-label">Energy</div>
+                </div>
+                <div class="snapshot-item">
+                  <div class="snapshot-value" id="snap-stress">Mild</div>
+                  <div class="snapshot-label">Stress</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <h3>This week</h3>
+              <div class="week-mood-list">
+                <div class="week-mood-row"><span class="week-mood-day">Mon</span><span class="week-mood-dot" style="background: var(--accent);"></span><span class="week-mood-val">Good</span></div>
+                <div class="week-mood-row"><span class="week-mood-day">Tue</span><span class="week-mood-dot" style="background: var(--green);"></span><span class="week-mood-val">Great</span></div>
+                <div class="week-mood-row"><span class="week-mood-day">Wed</span><span class="week-mood-dot" style="background: var(--ink-light);"></span><span class="week-mood-val">Neutral</span></div>
+                <div class="week-mood-row"><span class="week-mood-day">Thu</span><span class="week-mood-dot" style="background: var(--accent);"></span><span class="week-mood-val">Good</span></div>
+                <div class="week-mood-row"><span class="week-mood-day">Fri</span><span class="week-mood-dot" style="background: var(--green);"></span><span class="week-mood-val">Great</span></div>
+                <div class="week-mood-row"><span class="week-mood-day">Sat</span><span class="week-mood-dot" style="background: var(--accent);"></span><span class="week-mood-val">Good</span></div>
+                <div class="week-mood-row current-row"><span class="week-mood-day">Today</span><span class="week-mood-dot" style="background: var(--green);"></span><span class="week-mood-val" id="week-today-mood">Good</span></div>
+              </div>
+              <p class="streak-text"><strong>7 day</strong> check-in streak</p>
+            </div>
+
+            <div class="sidebar-card">
+              <h3>Yesterday</h3>
+              <p style="font-size: 13px; color: var(--ink-mid); line-height: 1.6;">Mood <strong style="color: var(--accent);">Good</strong> · Energy <strong>Good</strong> · Stress <strong>Mild</strong></p>
+              <p style="font-size: 12px; color: var(--ink-light); font-style: italic; margin-top: 8px;">"Slept well. Looking forward to the EVA sim."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESTORE -->
+      <div id="screen-restore" class="screen restore-screen">
+        <div class="screen-body">
+          <h1>Restore</h1>
+          <p class="restore-subtitle">Sounds from home. Pick a soundscape or start a breathing session.</p>
+
+          <div class="restore-modes">
+            <button class="restore-mode-btn active" onclick="setRestoreMode('soundscape')">Soundscapes</button>
+            <button class="restore-mode-btn" onclick="setRestoreMode('breathe')">Breathe</button>
+          </div>
+
+          <div class="soundscape-grid" id="soundscape-grid">
+            <div class="soundscape-card" onclick="openImmersive('forest', 'Forest Rain', 600)">
+              <div class="soundscape-img forest"></div>
+              <div class="soundscape-info">
+                <h3>Forest Rain</h3>
+                <p>Rain through a canopy, somewhere on Earth</p>
+                <p class="duration">10 min</p>
+              </div>
+            </div>
+            <div class="soundscape-card" onclick="openImmersive('ocean', 'Ocean Shore', 900)">
+              <div class="soundscape-img ocean"></div>
+              <div class="soundscape-info">
+                <h3>Ocean Shore</h3>
+                <p>Waves breaking on a quiet shore</p>
+                <p class="duration">15 min</p>
+              </div>
+            </div>
+            <div class="soundscape-card" onclick="openImmersive('rain', 'Quiet Rain', 600)">
+              <div class="soundscape-img rain"></div>
+              <div class="soundscape-info">
+                <h3>Quiet Rain</h3>
+                <p>Rain against a window on a slow afternoon</p>
+                <p class="duration">10 min</p>
+              </div>
+            </div>
+            <div class="soundscape-card" onclick="openImmersive('night', 'Night Sky', 1200)">
+              <div class="soundscape-img night"></div>
+              <div class="soundscape-info">
+                <h3>Night Sky</h3>
+                <p>A warm night back home</p>
+                <p class="duration">20 min</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="breathe-container" id="breathe-container">
+            <div class="breathe-ring idle" id="breathe-ring">
+              <div class="breathe-inner">
+                <span class="breathe-text" id="breathe-text">Inhale</span>
+              </div>
+            </div>
+            <p class="breathe-phase-time" id="breathe-phase-time">&nbsp;</p>
+            <p class="breathe-timing">4-7-8 breathing &middot; 5 minutes</p>
+            <button class="breathe-btn" id="breathe-btn" onclick="toggleBreathing()">Begin session</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RHYTHMS -->
+      <div id="screen-rhythms" class="screen rhythms-screen">
+        <div class="screen-body">
+          <h1>Rhythms</h1>
+
+          <div class="rhythms-grid">
+            <div class="rhythm-card">
+              <h2>Last night</h2>
+              <div class="sleep-stat">
+                <span class="big" id="sleep-duration">7:12</span>
+                <span class="unit">hours</span>
+              </div>
+              <p class="sleep-quality"><span class="quality-dot" id="quality-dot"></span>Self-rated: <span id="quality-text">good</span></p>
+              <div class="quality-options">
+                <button class="quality-btn" onclick="setQuality('poor', this)">Poor</button>
+                <button class="quality-btn" onclick="setQuality('fair', this)">Fair</button>
+                <button class="quality-btn active" onclick="setQuality('good', this)">Good</button>
+              </div>
+              <div class="sleep-log-form">
+                <div class="sleep-log-row">
+                  <label>Hours</label>
+                  <input type="number" class="sleep-input" id="sleep-hours" value="7" min="0" max="12">
+                  <span style="color: var(--ink-light); font-size: 12px;">h</span>
+                  <input type="number" class="sleep-input" id="sleep-mins" value="12" min="0" max="59">
+                  <span style="color: var(--ink-light); font-size: 12px;">m</span>
+                </div>
+                <button class="sleep-log-save" onclick="logSleep()">Update</button>
+              </div>
+            </div>
+
+            <div class="rhythm-card">
+              <h2>Light therapy</h2>
+              <div class="light-schedule">
+                <div class="light-item completed" onclick="toggleLight(this)">
+                  <div class="light-icon bright">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                  </div>
+                  <div class="light-info">
+                    <p class="name">Morning bright</p>
+                    <p class="time">06:00 &middot; 10,000 lux</p>
+                  </div>
+                  <span class="tag tag-done">done</span>
+                </div>
+                <div class="light-item" onclick="toggleLight(this)">
+                  <div class="light-icon dim">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="5"/></svg>
+                  </div>
+                  <div class="light-info">
+                    <p class="name">Evening dim</p>
+                    <p class="time">18:30 &middot; 2700K warm</p>
+                  </div>
+                  <span class="tag tag-next">next</span>
+                </div>
+                <div class="light-item" onclick="toggleLight(this)">
+                  <div class="light-icon filter">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ink-light)" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  </div>
+                  <div class="light-info">
+                    <p class="name">Blue filter</p>
+                    <p class="time">20:00 &middot; all screens</p>
+                  </div>
+                  <span class="tag" style="visibility: hidden;">done</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="rhythm-card">
+              <h2>Today's rhythm</h2>
+              <div class="timeline">
+                <div class="timeline-block timeline-sleep" style="left: 0; width: 25%;"></div>
+                <div class="timeline-block timeline-sleep" style="left: 87.5%; width: 12.5%;"></div>
+                <div class="timeline-block timeline-light" style="left: 25%; width: 2%;"></div>
+                <div class="timeline-block timeline-light" style="left: 77%; width: 2%;"></div>
+                <div class="timeline-block timeline-now" id="timeline-now" style="left: 42%;"></div>
+              </div>
+              <div class="timeline-labels">
+                <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+              </div>
+              <div class="timeline-legend">
+                <div class="legend-item"><div class="legend-swatch sleep"></div>Sleep</div>
+                <div class="legend-item"><div class="legend-swatch light"></div>Light therapy</div>
+                <div class="legend-item"><div class="legend-swatch now"></div>Now</div>
+              </div>
+
+              <h2 style="margin-top: 18px;">Sleep this week</h2>
+              <div class="week-bars" id="week-bars">
+                <div class="week-bar-group" data-hours="6" data-mins="28"><div class="week-bar" style="height: 60%;"><span class="week-bar-value">6h 28m</span></div><span class="week-bar-label">M</span></div>
+                <div class="week-bar-group" data-hours="7" data-mins="30"><div class="week-bar" style="height: 75%;"><span class="week-bar-value">7h 30m</span></div><span class="week-bar-label">T</span></div>
+                <div class="week-bar-group" data-hours="5" data-mins="45"><div class="week-bar" style="height: 50%;"><span class="week-bar-value">5h 45m</span></div><span class="week-bar-label">W</span></div>
+                <div class="week-bar-group" data-hours="6" data-mins="48"><div class="week-bar" style="height: 68%;"><span class="week-bar-value">6h 48m</span></div><span class="week-bar-label">T</span></div>
+                <div class="week-bar-group" data-hours="8" data-mins="00"><div class="week-bar" style="height: 80%;"><span class="week-bar-value">8h 00m</span></div><span class="week-bar-label">F</span></div>
+                <div class="week-bar-group" data-hours="7" data-mins="15"><div class="week-bar" style="height: 72%;"><span class="week-bar-value">7h 15m</span></div><span class="week-bar-label">S</span></div>
+                <div class="week-bar-group" data-hours="7" data-mins="12" id="today-bar-group"><div class="week-bar current" id="today-bar" style="height: 76%;"><span class="week-bar-value" id="today-bar-value">7h 12m</span></div><span class="week-bar-label current">Today</span></div>
+              </div>
+              <p class="avg">Average this week: <strong id="week-avg">7h 04m</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Immersive Overlay -->
+  <div class="immersive-overlay" id="immersive-overlay">
+    <div class="immersive-bg" id="immersive-bg"></div>
+    <div class="immersive-particles">
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+    <div class="immersive-content">
+      <p class="immersive-label">Solace · Sounds from Home</p>
+      <p class="immersive-title" id="immersive-title"></p>
+      <p class="immersive-timer" id="immersive-timer">10:00</p>
+      <button class="immersive-stop" onclick="closeImmersive()">End session</button>
+    </div>
+  </div>
+
+  <!-- Breathing Immersive Overlay -->
+  <div class="breathe-overlay" id="breathe-overlay">
+    <div class="breathe-overlay-bg"></div>
+    <div class="immersive-particles">
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+    <div class="breathe-overlay-content">
+      <p class="immersive-label">Solace Breathing</p>
+      <div class="breathe-ring idle" id="breathe-ring-immersive">
+        <div class="breathe-inner breathe-inner-immersive">
+          <span class="breathe-text breathe-text-immersive" id="breathe-text-immersive">Inhale</span>
+        </div>
+      </div>
+      <p class="breathe-phase-time breathe-phase-time-immersive" id="breathe-phase-time-immersive">&nbsp;</p>
+      <p class="breathe-timing-immersive">4-7-8 breathing</p>
+      <button class="immersive-stop" onclick="stopBreathing()">End session</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── Screen switching with animation ── */
+    function showScreen(name) {
+      const current = document.querySelector('.screen.active');
+      const next = document.getElementById('screen-' + name);
+      if (current === next) return;
+
+      if (current) current.classList.remove('active');
+
+      // Re-trigger animation on the screen-body inside the next screen
+      const body = next.querySelector('.screen-body');
+      if (body) {
+        body.style.animation = 'none';
+        void body.offsetHeight;
+        body.style.animation = '';
+      }
+
+      next.classList.add('active');
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.screen === name);
+      });
+    }
+
+    /* ── Mood selector ── */
+    const moodColors = {
+      1: { bg: 'conic-gradient(#F5E6E4 0deg, #C4473A 120deg, #F5E6E4 240deg, #F5E6E4 360deg)', label: 'Very low', color: '#C4473A' },
+      2: { bg: 'conic-gradient(#FEF0E0 0deg, #C07A00 120deg, #FEF0E0 240deg, #FEF0E0 360deg)', label: 'Low', color: '#C07A00' },
+      3: { bg: 'conic-gradient(#E8ECF1 0deg, #7E8599 140deg, #E8ECF1 280deg, #E8ECF1 360deg)', label: 'Neutral', color: '#7E8599' },
+      4: { bg: 'conic-gradient(#E4EDF9 0deg, #105DC8 160deg, #E4EDF9 300deg, #E4EDF9 360deg)', label: 'Good', color: '#105DC8' },
+      5: { bg: 'conic-gradient(#E2F4EB 0deg, #0F7B4A 180deg, #E2F4EB 340deg, #E2F4EB 360deg)', label: 'Great', color: '#0F7B4A' },
+    };
+
+    function selectMood(el, level) {
+      document.querySelectorAll('#mood-scale .mood-option').forEach(m => {
+        m.classList.remove('selected');
+        m.style.borderColor = '';
+        m.style.background = '';
+        m.style.color = '';
+      });
+      el.classList.add('selected');
+      // Update sidebar ring
+      const mc = moodColors[level];
+      el.style.borderColor = mc.color;
+      el.style.background = mc.color + '18';
+      el.style.color = mc.color;
+      document.getElementById('mood-ring').style.background = mc.bg;
+      document.getElementById('mood-ring-label').textContent = level;
+      document.getElementById('mood-ring-label').style.color = mc.color;
+      document.getElementById('mood-ring-sublabel').textContent = 'Mood: ' + mc.label;
+    }
+
+    /* ── Energy & Stress selectors ── */
+    const energyColors = {
+      1: { label: 'Exhausted', color: '#C4473A', bg: '#F5E6E4' },
+      2: { label: 'Low',       color: '#C07A00', bg: '#FEF0E0' },
+      3: { label: 'Moderate',  color: '#7E8599', bg: '#E8ECF1' },
+      4: { label: 'Good',      color: '#105DC8', bg: '#E4EDF9' },
+      5: { label: 'Energized', color: '#0F7B4A', bg: '#E2F4EB' },
+    };
+
+    const stressColors = {
+      1: { label: 'Calm',        color: '#0F7B4A', bg: '#E2F4EB' },
+      2: { label: 'Mild',        color: '#105DC8', bg: '#E4EDF9' },
+      3: { label: 'Moderate',    color: '#C07A00', bg: '#FEF0E0' },
+      4: { label: 'High',        color: '#C4473A', bg: '#F5E6E4' },
+      5: { label: 'Overwhelmed', color: '#91243B', bg: '#F5E0E4' },
+    };
+
+    function applyScaleColor(container, btn, colors, val, snapId) {
+      container.querySelectorAll('.mood-option').forEach(b => {
+        b.classList.remove('selected');
+        b.style.borderColor = '';
+        b.style.background = '';
+        b.style.color = '';
+      });
+      btn.classList.add('selected');
+      const c = colors[val];
+      btn.style.borderColor = c.color;
+      btn.style.background = c.bg;
+      btn.style.color = c.color;
+      const snap = document.getElementById(snapId);
+      snap.textContent = c.label;
+      snap.style.color = c.color;
+    }
+
+    function selectEnergy(btn, val) {
+      applyScaleColor(document.getElementById('energy-scale'), btn, energyColors, val, 'snap-energy');
+    }
+
+    function selectStress(btn, val) {
+      applyScaleColor(document.getElementById('stress-scale'), btn, stressColors, val, 'snap-stress');
+    }
+
+    // Apply initial colors
+    document.querySelector('#mood-scale .mood-option.selected')?.click();
+    document.querySelector('#energy-scale .mood-option.selected')?.click();
+    document.querySelector('#stress-scale .mood-option.selected')?.click();
+
+    /* ── Check-in submit ── */
+    function submitCheckin() {
+      const btn = document.getElementById('checkin-submit');
+      btn.disabled = true;
+      btn.textContent = 'Submitted';
+
+      // Update Today card
+      const dot = document.getElementById('checkin-dot');
+      const status = document.getElementById('checkin-status');
+      const text = document.getElementById('checkin-status-text');
+      dot.className = 'dot dot-green';
+      status.style.color = 'var(--green)';
+      text.textContent = 'Done today';
+
+      showToast('Check-in recorded');
+
+      // Reset after 3s so demo can be repeated
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Submit check-in';
+      }, 3000);
+    }
+
+    /* ── Restore modes ── */
+    function setRestoreMode(mode) {
+      const btns = document.querySelectorAll('.restore-mode-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (mode === 'breathe') {
+        btns[1].classList.add('active');
+      } else {
+        btns[0].classList.add('active');
+      }
+      const grid = document.getElementById('soundscape-grid');
+      const breathe = document.getElementById('breathe-container');
+      if (mode === 'breathe') {
+        grid.classList.add('hidden');
+        breathe.classList.add('active');
+      } else {
+        grid.classList.remove('hidden');
+        breathe.classList.remove('active');
+      }
+    }
+
+    /* ── Immersive overlay ── */
+    let timerInterval;
+
+    /* ── Ambient Sound Playback ── */
+    const soundFiles = {
+      forest: 'assets/forest.mp3',
+      ocean: 'assets/ocean.mp3',
+      rain: 'assets/rain.mp3',
+      night: 'assets/night.mp3',
+    };
+    let ambientAudio = null;
+
+    function startAmbient(type) {
+      stopAmbient();
+      ambientAudio = new Audio(soundFiles[type]);
+      ambientAudio.loop = true;
+      ambientAudio.volume = 0;
+      ambientAudio.play();
+      // Fade in
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol = Math.min(1, vol + 0.05);
+        ambientAudio.volume = vol;
+        if (vol >= 1) clearInterval(fadeIn);
+      }, 50);
+    }
+
+    function stopAmbient() {
+      if (!ambientAudio) return;
+      // Quick fade out
+      let vol = ambientAudio.volume;
+      const fadeOut = setInterval(() => {
+        vol = Math.max(0, vol - 0.1);
+        try { ambientAudio.volume = vol; } catch(e){}
+        if (vol <= 0) {
+          clearInterval(fadeOut);
+          try { ambientAudio.pause(); ambientAudio = null; } catch(e){}
+        }
+      }, 30);
+    }
+
+    function openImmersive(type, title, duration) {
+      const overlay = document.getElementById('immersive-overlay');
+      const bg = document.getElementById('immersive-bg');
+      bg.className = 'immersive-bg ' + type;
+      document.getElementById('immersive-title').textContent = title;
+      overlay.classList.add('active');
+
+      startAmbient(type);
+
+      let seconds = duration;
+      updateTimer(seconds);
+      timerInterval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) { closeImmersive(); return; }
+        updateTimer(seconds);
+      }, 1000);
+    }
+
+    function updateTimer(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      document.getElementById('immersive-timer').textContent =
+        m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function closeImmersive() {
+      document.getElementById('immersive-overlay').classList.remove('active');
+      clearInterval(timerInterval);
+      stopAmbient();
+    }
+
+    /* ── Breathing exercise (4-7-8) ── */
+    let breathingActive = false;
+    let breatheInterval;
+    let breatheTimeout;
+
+    function toggleBreathing() {
+      if (breathingActive) {
+        stopBreathing();
+      } else {
+        startBreathing();
+      }
+    }
+
+    let meditateAudio = null;
+
+    function startBreathing() {
+      breathingActive = true;
+      document.getElementById('breathe-overlay').classList.add('active');
+      runBreatheCycle();
+      // Start meditation music
+      meditateAudio = new Audio('assets/meditate.mp3');
+      meditateAudio.loop = true;
+      meditateAudio.volume = 0;
+      meditateAudio.play();
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol = Math.min(0.5, vol + 0.025);
+        meditateAudio.volume = vol;
+        if (vol >= 0.5) clearInterval(fadeIn);
+      }, 50);
+    }
+
+    function stopBreathing() {
+      breathingActive = false;
+      clearInterval(breatheInterval);
+      clearTimeout(breatheTimeout);
+      document.getElementById('breathe-overlay').classList.remove('active');
+      // Reset overlay elements
+      const ring = document.getElementById('breathe-ring-immersive');
+      const text = document.getElementById('breathe-text-immersive');
+      const timer = document.getElementById('breathe-phase-time-immersive');
+      ring.className = 'breathe-ring idle';
+      text.textContent = 'Inhale';
+      timer.innerHTML = '&nbsp;';
+      // Reset in-page elements
+      const btn = document.getElementById('breathe-btn');
+      btn.textContent = 'Begin session';
+      btn.classList.remove('stop');
+      // Fade out meditation music
+      if (meditateAudio) {
+        let vol = meditateAudio.volume;
+        const fadeOut = setInterval(() => {
+          vol = Math.max(0, vol - 0.05);
+          try { meditateAudio.volume = vol; } catch(e){}
+          if (vol <= 0) {
+            clearInterval(fadeOut);
+            try { meditateAudio.pause(); meditateAudio = null; } catch(e){}
+          }
+        }, 30);
+      }
+    }
+
+    function runBreatheCycle() {
+      if (!breathingActive) return;
+      breathePhase('inhale', 'Inhale', 4, () => {
+        breathePhase('hold', 'Hold', 7, () => {
+          breathePhase('exhale', 'Exhale', 8, () => {
+            runBreatheCycle();
+          });
+        });
+      });
+    }
+
+    function breathePhase(phase, label, duration, next) {
+      if (!breathingActive) return;
+      const ring = document.getElementById('breathe-ring-immersive');
+      const text = document.getElementById('breathe-text-immersive');
+      const timer = document.getElementById('breathe-phase-time-immersive');
+
+      ring.className = 'breathe-ring ' + phase;
+      text.textContent = label;
+
+      let remaining = duration;
+      timer.textContent = remaining;
+
+      breatheInterval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(breatheInterval);
+          return;
+        }
+        timer.textContent = remaining;
+      }, 1000);
+
+      breatheTimeout = setTimeout(() => {
+        clearInterval(breatheInterval);
+        if (breathingActive) next();
+      }, duration * 1000);
+    }
+
+    /* ── Toast notification ── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    /* ── Live mission clock ── */
+    function updateMissionClock() {
+      const clocks = document.querySelectorAll('.mission-clock');
+      const now = new Date();
+      const h = String(now.getUTCHours()).padStart(2, '0');
+      const m = String(now.getUTCMinutes()).padStart(2, '0');
+      const s = String(now.getUTCSeconds()).padStart(2, '0');
+      clocks.forEach(c => c.textContent = 'MET 247:' + h + ':' + m + ':' + s);
+    }
+    setInterval(updateMissionClock, 1000);
+    updateMissionClock();
+
+    /* ── Rhythms: live timeline marker ── */
+    function updateTimelineNow() {
+      const el = document.getElementById('timeline-now');
+      if (!el) return;
+      const now = new Date();
+      const pct = ((now.getUTCHours() * 60 + now.getUTCMinutes()) / 1440) * 100;
+      el.style.left = pct + '%';
+    }
+    setInterval(updateTimelineNow, 60000);
+    updateTimelineNow();
+
+    /* ── Rhythms: sleep quality ── */
+    const qualityColors = { poor: 'var(--nasa-red)', fair: 'var(--amber)', good: 'var(--green)' };
+
+    function setQuality(level, btn) {
+      document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('quality-text').textContent = level;
+      document.getElementById('quality-dot').style.background = qualityColors[level];
+    }
+
+    /* ── Rhythms: log sleep ── */
+    function logSleep() {
+      const h = parseInt(document.getElementById('sleep-hours').value) || 0;
+      const m = parseInt(document.getElementById('sleep-mins').value) || 0;
+      document.getElementById('sleep-duration').textContent = h + ':' + String(m).padStart(2, '0');
+
+      // Update today's bar (10h = 100%)
+      const totalMins = h * 60 + m;
+      const pct = Math.min(100, Math.round((totalMins / 600) * 100));
+      document.getElementById('today-bar').style.height = pct + '%';
+      document.getElementById('today-bar-value').textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
+
+      // Update data attributes
+      const group = document.getElementById('today-bar-group');
+      group.dataset.hours = h;
+      group.dataset.mins = m;
+
+      // Recalculate weekly average
+      const groups = document.querySelectorAll('#week-bars .week-bar-group');
+      let total = 0;
+      groups.forEach(g => {
+        total += (parseInt(g.dataset.hours) || 0) * 60 + (parseInt(g.dataset.mins) || 0);
+      });
+      const avg = Math.round(total / groups.length);
+      const avgH = Math.floor(avg / 60);
+      const avgM = avg % 60;
+      document.getElementById('week-avg').textContent = avgH + 'h ' + String(avgM).padStart(2, '0') + 'm';
+
+      showToast('Sleep logged: ' + h + 'h ' + m + 'm');
+    }
+
+    /* ── Rhythms: toggle light therapy ── */
+    function toggleLight(item) {
+      const tag = item.querySelector('.tag');
+      if (item.classList.contains('completed')) {
+        item.classList.remove('completed');
+        tag.className = 'tag tag-next';
+        tag.textContent = 'next';
+        tag.style.visibility = 'visible';
+      } else {
+        item.classList.add('completed');
+        tag.className = 'tag tag-done';
+        tag.textContent = 'done';
+        tag.style.visibility = 'visible';
+        showToast('Light therapy marked done');
+      }
+    }
+
+    /* ── URL param routing (extended for Figma captures) ── */
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const p = params.get('screen');
+      if (p && document.getElementById('screen-' + p)) showScreen(p);
+
+      // Check-In: mood/energy/stress selectors
+      const mood = params.get('mood');
+      if (mood) {
+        const idx = parseInt(mood) - 1;
+        const btns = document.querySelectorAll('#mood-scale .mood-option');
+        if (btns[idx]) selectMood(btns[idx], parseInt(mood));
+      }
+      const energy = params.get('energy');
+      if (energy) {
+        const idx = parseInt(energy) - 1;
+        const btns = document.querySelectorAll('#energy-scale .mood-option');
+        if (btns[idx]) selectEnergy(btns[idx], parseInt(energy));
+      }
+      const stress = params.get('stress');
+      if (stress) {
+        const idx = parseInt(stress) - 1;
+        const btns = document.querySelectorAll('#stress-scale .mood-option');
+        if (btns[idx]) selectStress(btns[idx], parseInt(stress));
+      }
+
+      // Restore: mode switch
+      const mode = params.get('mode');
+      if (mode === 'breathe') setRestoreMode('breathe');
+
+      // Restore: immersive soundscape overlay (frozen for capture, no audio)
+      const immersive = params.get('immersive');
+      if (immersive) {
+        const titles = { forest: 'Forest Rain', ocean: 'Ocean Shore', rain: 'Quiet Rain', night: 'Night Sky' };
+        const overlay = document.getElementById('immersive-overlay');
+        const bg = document.getElementById('immersive-bg');
+        bg.className = 'immersive-bg ' + immersive;
+        document.getElementById('immersive-title').textContent = titles[immersive] || 'Soundscape';
+        document.getElementById('immersive-timer').textContent = '8:42';
+        overlay.classList.add('active');
+      }
+
+      // Restore: breathing overlay (frozen at inhale, no audio)
+      const breathing = params.get('breathing');
+      if (breathing === 'active') {
+        const overlay = document.getElementById('breathe-overlay');
+        overlay.classList.add('active');
+        const ring = document.getElementById('breathe-ring-immersive');
+        ring.className = 'breathe-ring inhale';
+        document.getElementById('breathe-text-immersive').textContent = 'Inhale';
+        document.getElementById('breathe-phase-time-immersive').textContent = '4';
+      }
+
+      // Rhythms: sleep quality
+      const quality = params.get('quality');
+      if (quality) {
+        const btn = [...document.querySelectorAll('.quality-btn')].find(b => b.textContent.trim().toLowerCase() === quality);
+        if (btn) setQuality(quality, btn);
+      }
+
+      // Rhythms: sleep hours/mins
+      const sleepH = params.get('sleephours');
+      const sleepM = params.get('sleepmins');
+      if (sleepH || sleepM) {
+        if (sleepH) document.getElementById('sleep-hours').value = sleepH;
+        if (sleepM) document.getElementById('sleep-mins').value = sleepM;
+        logSleep();
+      }
+    })();
+  </script>
+</body>
+</html>

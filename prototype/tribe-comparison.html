@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>TRIBE v2 Neuroscience Validation — Solace App</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0A0E1A;
+      --surface: #111827;
+      --surface-2: #1A2235;
+      --border: #2A3350;
+      --ink: #E8ECF2;
+      --ink-mid: #9CA3B8;
+      --ink-light: #6B7490;
+      --accent: #3B82F6;
+      --accent-soft: #60A5FA;
+      --green: #34D399;
+      --red: #F87171;
+      --amber: #FBBF24;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+
+    /* Header */
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .hero h1 strong {
+      font-weight: 600;
+      color: var(--accent-soft);
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--ink-mid);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Experiment sections */
+    .experiment {
+      margin-bottom: 72px;
+    }
+
+    .exp-header {
+      margin-bottom: 32px;
+    }
+
+    .exp-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .exp-header h2 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .exp-header p {
+      font-size: 14px;
+      color: var(--ink-mid);
+      max-width: 800px;
+    }
+
+    /* Comparison row */
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .comparison-row.two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .brain-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .brain-card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brain-card-header .label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .brain-card-header .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .tag-good { background: rgba(52,211,153,0.15); color: var(--green); }
+    .tag-bad { background: rgba(248,113,113,0.15); color: var(--red); }
+    .tag-diff { background: rgba(59,130,246,0.15); color: var(--accent-soft); }
+    .tag-audio { background: rgba(251,191,36,0.15); color: var(--amber); }
+
+    .brain-card .brain-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-light);
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .brain-card .brain-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Screenshot comparison */
+    .screenshot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .screenshot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .screenshot-card .screenshot-header {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .screenshot-card .screenshot-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-light);
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .screenshot-card .screenshot-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Stats box */
+    .stats-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .stats-box h3 {
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .stat-value {
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--accent-soft);
+      margin-bottom: 2px;
+    }
+
+    .stat-item .stat-label {
+      font-size: 11px;
+      color: var(--ink-light);
+    }
+
+    /* Audio grid */
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .audio-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .audio-card .audio-header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .audio-card .audio-img {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-light);
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .audio-card .audio-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Conditions grid */
+    .conditions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .condition-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .condition-card .condition-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .condition-card .condition-header .condition-label {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .condition-card .condition-header .condition-desc {
+      font-size: 11px;
+      color: var(--ink-light);
+      line-height: 1.4;
+    }
+
+    .condition-card .condition-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-light);
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .condition-card .condition-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Callout */
+    .callout {
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+
+    .callout h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-soft);
+      margin-bottom: 8px;
+    }
+
+    .callout p {
+      font-size: 14px;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+
+    .footer p {
+      font-size: 13px;
+      color: var(--ink-light);
+    }
+
+    .footer .model-info {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-light);
+      margin-top: 8px;
+    }
+
+    /* Screen tabs for Exp 1 */
+    .screen-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .screen-tab {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .screen-tab:hover { border-color: var(--accent); color: var(--ink); }
+    .screen-tab.active { background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent-soft); font-weight: 500; }
+
+    .screen-panel { display: none; }
+    .screen-panel.active { display: block; }
+
+    /* Placeholder text for images not yet generated */
+    .placeholder {
+      font-style: italic;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-badge">Meta FAIR TRIBE v2 Brain Encoder</div>
+      <h1>Neuroscience Validation for <strong>Solace</strong></h1>
+      <p>Predicted cortical activation patterns comparing neuroscience-informed design (biophilic, calming) against clinical anti-patterns (harsh, surveillance-oriented) — using the same app, same data, different design decisions.</p>
+    </div>
+
+    <!-- Experiment 1 -->
+    <div class="experiment">
+      <div class="exp-header">
+        <p class="exp-number">Experiment 01</p>
+        <h2>Screen-by-Screen: Good vs Bad Design</h2>
+        <p>For each of the 5 app screens, we compare brain activation between Solace's neuroscience-informed design (light theme, NASA blue, IBM Plex Sans, nature imagery) and a clinical anti-pattern (harsh red, Arial, dense tables, surveillance language).</p>
+      </div>
+
+      <div class="screen-tabs">
+        <button class="screen-tab active" onclick="showScreenPanel('today')">Today</button>
+        <button class="screen-tab" onclick="showScreenPanel('checkin')">Check-In</button>
+        <button class="screen-tab" onclick="showScreenPanel('restore')">Restore</button>
+        <button class="screen-tab" onclick="showScreenPanel('breathe')">Breathe</button>
+        <button class="screen-tab" onclick="showScreenPanel('rhythms')">Rhythms</button>
+        <button class="screen-tab" onclick="showScreenPanel('average')">Overall Average</button>
+      </div>
+
+      <!-- Today -->
+      <div class="screen-panel active" id="panel-today">
+        <div class="screenshot-row">
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-good">GOOD</span><span class="label">Solace — Today</span></div>
+            <div class="screenshot-img"><img src="assets/brain/good_today.png" alt="Good Today" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;good_today.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-bad">BAD</span><span class="label">Anti-Pattern — Today</span></div>
+            <div class="screenshot-img"><img src="assets/brain/bad_today.png" alt="Bad Today" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;bad_today.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_good_today.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_good_today.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_bad_today.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_bad_today.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_diff_today.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_diff_today.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-In -->
+      <div class="screen-panel" id="panel-checkin">
+        <div class="screenshot-row">
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-good">GOOD</span><span class="label">Solace — Check-In</span></div>
+            <div class="screenshot-img"><img src="assets/brain/good_checkin.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;good_checkin.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-bad">BAD</span><span class="label">Anti-Pattern — Check-In</span></div>
+            <div class="screenshot-img"><img src="assets/brain/bad_checkin.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;bad_checkin.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_good_checkin.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_good_checkin.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_bad_checkin.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_bad_checkin.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_diff_checkin.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_diff_checkin.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restore -->
+      <div class="screen-panel" id="panel-restore">
+        <div class="screenshot-row">
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-good">GOOD</span><span class="label">Solace — Restore</span></div>
+            <div class="screenshot-img"><img src="assets/brain/good_restore.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;good_restore.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-bad">BAD</span><span class="label">Anti-Pattern — Restore</span></div>
+            <div class="screenshot-img"><img src="assets/brain/bad_restore.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;bad_restore.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_good_restore.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_good_restore.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_bad_restore.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_bad_restore.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_diff_restore.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_diff_restore.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breathe -->
+      <div class="screen-panel" id="panel-breathe">
+        <div class="screenshot-row">
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-good">GOOD</span><span class="label">Solace — Breathe</span></div>
+            <div class="screenshot-img"><img src="assets/brain/good_breathe.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;good_breathe.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-bad">BAD</span><span class="label">Anti-Pattern — Breathe</span></div>
+            <div class="screenshot-img"><img src="assets/brain/bad_breathe.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;bad_breathe.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_good_breathe.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_good_breathe.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_bad_breathe.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_bad_breathe.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_diff_breathe.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_diff_breathe.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rhythms -->
+      <div class="screen-panel" id="panel-rhythms">
+        <div class="screenshot-row">
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-good">GOOD</span><span class="label">Solace — Rhythms</span></div>
+            <div class="screenshot-img"><img src="assets/brain/good_rhythms.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;good_rhythms.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="screenshot-card">
+            <div class="screenshot-header"><span class="tag tag-bad">BAD</span><span class="label">Anti-Pattern — Rhythms</span></div>
+            <div class="screenshot-img"><img src="assets/brain/bad_rhythms.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;bad_rhythms.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_good_rhythms.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_good_rhythms.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Brain Activation</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_brain_bad_rhythms.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_brain_bad_rhythms.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_diff_rhythms.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_diff_rhythms.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average -->
+      <div class="screen-panel" id="panel-average">
+        <div class="comparison-row">
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-good">GOOD</span><span class="label">Average — All Screens</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_avg_good.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_avg_good.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-bad">BAD</span><span class="label">Average — All Screens</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_avg_bad.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_avg_bad.png&lt;/span&gt;'"></div>
+          </div>
+          <div class="brain-card">
+            <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Good minus Bad (avg)</span></div>
+            <div class="brain-img"><img src="assets/brain/exp1_avg_difference.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp1_avg_difference.png&lt;/span&gt;'"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>Key Finding</h3>
+        <p>The difference maps reveal which brain regions respond differently to neuroscience-informed vs clinical design. Warm tones indicate stronger activation from the good design; cool tones indicate stronger activation from the bad design. Regions associated with visual processing, emotional regulation, and attention may show measurable differences.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Experiment 2 -->
+    <div class="experiment">
+      <div class="exp-header">
+        <p class="exp-number">Experiment 02</p>
+        <h2>Soundscape Calming Effects</h2>
+        <p>Brain activation from each of the 5 nature audio files used in the Solace app. These are the actual audio assets from the prototype.</p>
+      </div>
+
+      <div class="audio-grid">
+        <div class="audio-card">
+          <div class="audio-header">Ocean</div>
+          <div class="audio-img"><img src="assets/brain/exp2_brain_ocean.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_brain_ocean.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="audio-card">
+          <div class="audio-header">Rain</div>
+          <div class="audio-img"><img src="assets/brain/exp2_brain_rain.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_brain_rain.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="audio-card">
+          <div class="audio-header">Forest</div>
+          <div class="audio-img"><img src="assets/brain/exp2_brain_forest.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_brain_forest.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="audio-card">
+          <div class="audio-header">Night</div>
+          <div class="audio-img"><img src="assets/brain/exp2_brain_night.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_brain_night.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="audio-card">
+          <div class="audio-header">Meditate</div>
+          <div class="audio-img"><img src="assets/brain/exp2_brain_meditate.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_brain_meditate.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="comparison-row two-col">
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Strongest vs Weakest</span></div>
+          <div class="brain-img"><img src="assets/brain/exp2_diff_strongest_weakest.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_diff_strongest_weakest.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Nature Sounds vs Meditation</span></div>
+          <div class="brain-img"><img src="assets/brain/exp2_diff_nature_vs_meditate.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp2_diff_nature_vs_meditate.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>Key Finding</h3>
+        <p>Each nature soundscape produces a distinct cortical activation pattern. This validates Solace's approach of offering multiple soundscapes — different sounds may benefit different emotional states or preferences. The comparison with meditation music shows whether structured music activates different brain regions than natural ambient sounds.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Experiment 3 -->
+    <div class="experiment">
+      <div class="exp-header">
+        <p class="exp-number">Experiment 03</p>
+        <h2>Space Isolation Context</h2>
+        <p>Does framing matter? Same ocean audio with warm biophilic description vs clinical description, plus isolation text without audio. Tests whether Solace's warm, Earth-connected tone produces measurably different brain activation than a clinical approach.</p>
+      </div>
+
+      <div class="conditions-grid">
+        <div class="condition-card">
+          <div class="condition-header">
+            <p class="condition-label">Condition A: Biophilic</p>
+            <p class="condition-desc">Ocean audio + warm Earth-connected text about home, sand, waves</p>
+          </div>
+          <div class="condition-img"><img src="assets/brain/exp3_biophilic.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_biophilic.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="condition-card">
+          <div class="condition-header">
+            <p class="condition-label">Condition B: Clinical</p>
+            <p class="condition-desc">Same ocean audio + clinical text about protocols and compliance</p>
+          </div>
+          <div class="condition-img"><img src="assets/brain/exp3_clinical.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_clinical.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="condition-card">
+          <div class="condition-header">
+            <p class="condition-label">Condition C: Isolation</p>
+            <p class="condition-desc">Text only — describing 97 days in space, no audio, no nature connection</p>
+          </div>
+          <div class="condition-img"><img src="assets/brain/exp3_isolation.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_isolation.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="comparison-row">
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Biophilic vs Clinical</span></div>
+          <div class="brain-img"><img src="assets/brain/exp3_diff_biophilic_vs_clinical.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_diff_biophilic_vs_clinical.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Biophilic vs Isolation</span></div>
+          <div class="brain-img"><img src="assets/brain/exp3_diff_biophilic_vs_isolation.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_diff_biophilic_vs_isolation.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-diff">DIFF</span><span class="label">Clinical vs Isolation</span></div>
+          <div class="brain-img"><img src="assets/brain/exp3_diff_clinical_vs_isolation.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp3_diff_clinical_vs_isolation.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>Key Finding</h3>
+        <p>Even with identical audio content, the accompanying text framing changes how the brain processes the experience. Biophilic framing — evoking Earth, home, nature — should show distinct activation patterns compared to cold clinical language. The isolation-only condition reveals the neural impact of feeling disconnected, which is exactly what Solace is designed to counteract.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Experiment 4 -->
+    <div class="experiment">
+      <div class="exp-header">
+        <p class="exp-number">Experiment 04</p>
+        <h2>Multimodal Advantage</h2>
+        <p>Replicating the TRIBE v2 paper's core finding (Figure 7C) with Solace app content: visual + audio together activates more cortex than either modality alone. This validates Solace's decision to combine nature imagery with soundscapes.</p>
+      </div>
+
+      <div class="comparison-row">
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-audio">VISUAL</span><span class="label">Restore Screen Only</span></div>
+          <div class="brain-img"><img src="assets/brain/exp4_visual.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp4_visual.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-audio">AUDIO</span><span class="label">Ocean Sound Only</span></div>
+          <div class="brain-img"><img src="assets/brain/exp4_audio.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp4_audio.png&lt;/span&gt;'"></div>
+        </div>
+        <div class="brain-card">
+          <div class="brain-card-header"><span class="tag tag-good">COMBINED</span><span class="label">Visual + Audio</span></div>
+          <div class="brain-img"><img src="assets/brain/exp4_combined.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp4_combined.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="comparison-row two-col" style="max-width: 600px; margin: 0 auto 24px;">
+        <div class="brain-card" style="grid-column: 1 / -1;">
+          <div class="brain-card-header"><span class="tag tag-diff">ADVANTAGE</span><span class="label">Multimodal Gain (Combined minus Best Unimodal)</span></div>
+          <div class="brain-img"><img src="assets/brain/exp4_multimodal_advantage.png" alt="" onerror="this.parentElement.innerHTML='&lt;span class=placeholder&gt;exp4_multimodal_advantage.png&lt;/span&gt;'"></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>Key Finding</h3>
+        <p>Warm regions in the multimodal advantage map show brain areas where the combination of seeing nature imagery AND hearing ocean waves activates more cortex than either stimulus alone. This is why Solace pairs soundscape audio with immersive nature photography — the multimodal experience is neurologically richer than either component by itself. This replicates the TRIBE v2 paper's Figure 7C with our own content.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Solace — Astronaut Mental Wellness App</p>
+      <p>Figma Education Program UX Challenge 2026</p>
+      <p class="model-info">Brain predictions by Meta FAIR TRIBE v2 (facebook/tribev2) · fsaverage5 mesh · T4 GPU</p>
+    </div>
+
+  </div>
+
+  <script>
+    function showScreenPanel(name) {
+      document.querySelectorAll('.screen-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

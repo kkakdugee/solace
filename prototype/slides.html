@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Solace — Presentation Slides</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; font-family: 'IBM Plex Sans', sans-serif; }
+
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Slide 1: Title ── */
+  .slide-title {
+    background: linear-gradient(135deg, #070D1A 0%, #0B1426 40%, #0B3D91 100%);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
+  .slide-title .logo {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 32px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .slide-title h1 {
+    font-size: 96px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .slide-title h1 span { color: #58A6FF; }
+  .slide-title .subtitle {
+    font-size: 28px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    max-width: 700px;
+    line-height: 1.5;
+  }
+  .slide-title .badge {
+    margin-top: 48px;
+    padding: 10px 28px;
+    border: 1px solid rgba(88,166,255,0.3);
+    border-radius: 100px;
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    color: #58A6FF;
+  }
+
+  /* ── Common slide styles ── */
+  .slide-dark {
+    background: #0D1117;
+    color: #fff;
+    padding: 80px 120px;
+  }
+  .slide-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .slide-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: #58A6FF;
+    text-transform: uppercase;
+  }
+  .slide-dark h2 {
+    font-size: 52px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    margin-bottom: 48px;
+  }
+  .slide-dark h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: #E6EDF3;
+  }
+
+  /* ── Slide 2: Problem Areas ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    flex: 1;
+  }
+  .problem-card {
+    background: #161B22;
+    border-radius: 16px;
+    padding: 40px 36px;
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+  }
+  .problem-card:nth-child(1) { border-color: #58A6FF; }
+  .problem-card:nth-child(2) { border-color: #3FB950; }
+  .problem-card:nth-child(3) { border-color: #D29922; }
+  .problem-card .card-icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+  .problem-card h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .problem-card p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── Slide 3: Design System ── */
+  .ds-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    flex: 1;
+  }
+  .ds-section {
+    background: #161B22;
+    border-radius: 16px;
+    padding: 36px;
+  }
+  .ds-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #58A6FF;
+    margin-bottom: 24px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .color-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  .color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .color-label {
+    font-size: 15px;
+    color: rgba(255,255,255,0.8);
+  }
+  .color-hex {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+  }
+  .principle-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .principle-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #58A6FF;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .principle-name {
+    font-size: 17px;
+    font-weight: 500;
+    color: #E6EDF3;
+  }
+  .principle-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+  .font-demo {
+    margin-bottom: 20px;
+  }
+  .font-demo .name {
+    font-size: 14px;
+    color: #58A6FF;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 6px;
+  }
+  .font-demo .sample {
+    font-size: 28px;
+    font-weight: 300;
+    color: #E6EDF3;
+  }
+  .font-demo .sample-mono {
+    font-size: 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #E6EDF3;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Slide 4 & 5: Prototype Screenshots ── */
+  .screen-showcase {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    flex: 1;
+    align-items: start;
+  }
+  .screen-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .screen-item img {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .screen-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ── Slide 6: Comparison ── */
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    flex: 1;
+    align-items: start;
+  }
+  .comparison-column h3 {
+    font-size: 18px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .comparison-column.good h3 { color: #3FB950; }
+  .comparison-column.bad h3 { color: #F85149; }
+  .comparison-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .comparison-pair img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .comparison-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 20px;
+  }
+  .comparison-cell {
+    flex: 1;
+    text-align: center;
+  }
+  .comparison-cell img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .comparison-cell .label {
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 8px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ── Slide 7: Brain Results ── */
+  .brain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    flex: 1;
+  }
+  .brain-card {
+    background: #161B22;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .brain-card h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: #E6EDF3;
+  }
+  .brain-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #1A2332, #0D1117);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    border: 1px dashed rgba(255,255,255,0.1);
+  }
+
+  /* ── Slide 8: Closing ── */
+  .slide-closing {
+    background: linear-gradient(135deg, #0B3D91 0%, #070D1A 60%, #0D1117 100%);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
+  .slide-closing h2 {
+    font-size: 64px;
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+  .slide-closing .tagline {
+    font-size: 24px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 56px;
+    max-width: 600px;
+  }
+  .deliverables {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .deliverable-tag {
+    padding: 12px 24px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .slide-closing .credit {
+    margin-top: 56px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.3);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── User Flow Slide ── */
+  .flow-visual {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .flow-node {
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #E6EDF3;
+  }
+  .flow-node.start { background: #161B22; border: 1px solid #30363D; }
+  .flow-node.action { background: #0D2847; border: 1px solid #1A3E6E; }
+  .flow-node.decision { background: #2A1F00; border: 1px solid #5A4200; transform: rotate(0deg); border-radius: 4px; }
+  .flow-node.restore { background: #0A2E1A; border: 1px solid #1A5E34; }
+  .flow-node.sleep { background: #1A1440; border: 1px solid #342A7E; }
+  .flow-node.crew { background: #2A1525; border: 1px solid #5A2A4E; }
+  .flow-arrow {
+    color: rgba(255,255,255,0.2);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .flow-section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    min-width: 100px;
+  }
+  .flow-branch {
+    display: flex;
+    gap: 24px;
+    margin-left: 112px;
+  }
+  .flow-branch-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .flow-branch-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide-title">
+  <p class="logo">Figma Education UX Challenge</p>
+  <h1><span>Solace</span></h1>
+  <p class="subtitle">Astronaut Mental Wellness Companion for Long-Duration Space Missions</p>
+  <div class="badge">Neuroscience-Informed Design</div>
+</div>
+
+<!-- SLIDE 2: Problem Framing -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">01 &mdash; Research</p>
+  </div>
+  <h2>NASA Problem Areas</h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="card-icon">&#x1F9E0;</div>
+      <h3>Behavioral Health Monitoring</h3>
+      <p>Astronauts experience stress, mood shifts, and emotional fatigue in isolation. Current tools rely on clinical questionnaires that feel like medical paperwork, not personal wellness support.</p>
+    </div>
+    <div class="problem-card">
+      <div class="card-icon">&#x1F33F;</div>
+      <h3>Mindfulness & Restoration</h3>
+      <p>No nature walks in space. No ocean sounds, no forests. Astronauts lose access to the restorative environments humans have relied on for thousands of years to manage stress.</p>
+    </div>
+    <div class="problem-card">
+      <div class="card-icon">&#x1F319;</div>
+      <h3>Sleep & Circadian Disruption</h3>
+      <p>The ISS orbits Earth every 90 minutes — 16 sunrises per day. Circadian rhythms are completely disrupted, leading to chronic sleep issues that compound every other risk.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: User Flow -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">02 &mdash; User Flow</p>
+  </div>
+  <h2>Astronaut Daily Journey</h2>
+  <div class="flow-visual">
+    <div class="flow-row">
+      <span class="flow-section-label">Morning</span>
+      <div class="flow-node start">Wake Up</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node action">Open Solace</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node decision">Mood Check</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node action">Check-In</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node action">Wellness Score</div>
+    </div>
+    <div class="flow-branch">
+      <div class="flow-branch-item">
+        <span class="flow-branch-label">score low &rarr;</span>
+        <div class="flow-node restore">Restoration Suggestion</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-node restore">Restore Hub</div>
+      </div>
+      <div class="flow-branch-item">
+        <span class="flow-branch-label">normal &rarr;</span>
+        <div class="flow-node action">Daily Schedule</div>
+      </div>
+    </div>
+    <div class="flow-row">
+      <span class="flow-section-label">Restore Hub</span>
+      <div class="flow-node restore">Nature Soundscapes</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node restore">Guided Breathing</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node restore">Journaling</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node restore">Earth View</div>
+    </div>
+    <div class="flow-row">
+      <span class="flow-section-label">Work Shift</span>
+      <div class="flow-node action">High Cognitive Load</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node restore">Micro-Restoration Break</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node action">Return to Dashboard</div>
+    </div>
+    <div class="flow-row">
+      <span class="flow-section-label">Evening</span>
+      <div class="flow-node sleep">Sleep Center</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node sleep">Light Therapy</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node sleep">Sleep Trends</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node sleep">Bedtime Mode</div>
+    </div>
+    <div class="flow-row">
+      <span class="flow-section-label">Social</span>
+      <div class="flow-node crew">Crew Hub</div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-node crew">Async Messages</div>
+      <span class="flow-arrow">&bull;</span>
+      <div class="flow-node crew">Gratitude Wall</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Design System -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">03 &mdash; Design System</p>
+  </div>
+  <h2>Neuroscience-Informed Tokens</h2>
+  <div class="ds-grid">
+    <div class="ds-section">
+      <h3>Color Palette</h3>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #0B3D91;"></div>
+        <div><span class="color-label">NASA Blue</span><br><span class="color-hex">#0B3D91 &mdash; Primary, calming</span></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #0D1117;"></div>
+        <div><span class="color-label">Deep Space</span><br><span class="color-hex">#0D1117 &mdash; Background</span></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #161B22;"></div>
+        <div><span class="color-label">Surface</span><br><span class="color-hex">#161B22 &mdash; Card elevation</span></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #58A6FF;"></div>
+        <div><span class="color-label">Accent Blue</span><br><span class="color-hex">#58A6FF &mdash; Interactive highlights</span></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #3FB950;"></div>
+        <div><span class="color-label">Success Green</span><br><span class="color-hex">#3FB950 &mdash; Positive states</span></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch" style="background: #D29922;"></div>
+        <div><span class="color-label">Amber</span><br><span class="color-hex">#D29922 &mdash; Schedule, warnings</span></div>
+      </div>
+    </div>
+    <div class="ds-section">
+      <h3>Design Principles (from TRIBE v2)</h3>
+      <div class="principle-item">
+        <div class="principle-dot"></div>
+        <div><p class="principle-name">Multi-Sensory Stimuli</p><p class="principle-desc">Auditory + Visual together for deeper cortical engagement</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot" style="background:#3FB950;"></div>
+        <div><p class="principle-name">Nature & Journaling</p><p class="principle-desc">Engages Default Mode Network during rest states</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot" style="background:#D29922;"></div>
+        <div><p class="principle-name">Dark High-Contrast Theme</p><p class="principle-desc">Optimized for Visual Network without strain</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot" style="background:#F85149;"></div>
+        <div><p class="principle-name">Minimal Animation</p><p class="principle-desc">Avoids taxing the Motion Network</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot" style="background:#A371F7;"></div>
+        <div><p class="principle-name">Icon-Forward Navigation</p><p class="principle-desc">Reduces Language Network processing load</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot" style="background:#79C0FF;"></div>
+        <div><p class="principle-name">Glove-Friendly Touch Targets</p><p class="principle-desc">48px minimum for EVA suit compatibility</p></div>
+      </div>
+    </div>
+    <div class="ds-section">
+      <h3>Typography</h3>
+      <div class="font-demo">
+        <p class="name">Primary &mdash; IBM Plex Sans</p>
+        <p class="sample">Good morning, Commander</p>
+      </div>
+      <div class="font-demo">
+        <p class="name">Mono &mdash; IBM Plex Mono</p>
+        <p class="sample-mono">SOL 247 &middot; 06:30 UTC</p>
+      </div>
+    </div>
+    <div class="ds-section">
+      <h3>Spacing & Targets</h3>
+      <div class="principle-item">
+        <div class="principle-dot"></div>
+        <div><p class="principle-name">16px Base Grid</p><p class="principle-desc">Generous whitespace for clarity and calm</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot"></div>
+        <div><p class="principle-name">48px Touch Targets</p><p class="principle-desc">Accessible with EVA gloves</p></div>
+      </div>
+      <div class="principle-item">
+        <div class="principle-dot"></div>
+        <div><p class="principle-name">10px Border Radius</p><p class="principle-desc">Soft, approachable card shapes</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Good Prototype -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">04 &mdash; Prototype</p>
+  </div>
+  <h2>Solace &mdash; Neuroscience-Informed Design</h2>
+  <div class="screen-showcase">
+    <div class="screen-item">
+      <img src="../screenshots/good_today.png" alt="Today">
+      <p class="screen-label">Today</p>
+    </div>
+    <div class="screen-item">
+      <img src="../screenshots/good_checkin.png" alt="Check-In">
+      <p class="screen-label">Check-In</p>
+    </div>
+    <div class="screen-item">
+      <img src="../screenshots/good_restore.png" alt="Restore">
+      <p class="screen-label">Restore</p>
+    </div>
+    <div class="screen-item">
+      <img src="../screenshots/good_breathe.png" alt="Breathe">
+      <p class="screen-label">Breathe</p>
+    </div>
+    <div class="screen-item">
+      <img src="../screenshots/good_rhythms.png" alt="Rhythms">
+      <p class="screen-label">Rhythms</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Good vs Bad Comparison -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">05 &mdash; Validation</p>
+  </div>
+  <h2>Good vs Bad &mdash; Design Comparison</h2>
+  <div style="display: flex; gap: 24px; flex: 1; align-items: start;">
+    <div style="flex: 1;">
+      <h3 style="text-align:center; color: #3FB950; font-family: 'IBM Plex Mono', monospace; font-size: 14px; letter-spacing: 0.1em; margin-bottom: 20px;">NEUROSCIENCE-INFORMED (GOOD)</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <img src="../screenshots/good_today.png" alt="Good Today" style="width:100%; border-radius: 8px; border: 1px solid rgba(63,185,80,0.2);">
+        <img src="../screenshots/good_checkin.png" alt="Good Check-In" style="width:100%; border-radius: 8px; border: 1px solid rgba(63,185,80,0.2);">
+        <img src="../screenshots/good_restore.png" alt="Good Restore" style="width:100%; border-radius: 8px; border: 1px solid rgba(63,185,80,0.2);">
+        <img src="../screenshots/good_breathe.png" alt="Good Breathe" style="width:100%; border-radius: 8px; border: 1px solid rgba(63,185,80,0.2);">
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <h3 style="text-align:center; color: #F85149; font-family: 'IBM Plex Mono', monospace; font-size: 14px; letter-spacing: 0.1em; margin-bottom: 20px;">CLINICAL ANTI-PATTERN (BAD)</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <img src="../screenshots/bad_today.png" alt="Bad Today" style="width:100%; border-radius: 8px; border: 1px solid rgba(248,81,73,0.2);">
+        <img src="../screenshots/bad_checkin.png" alt="Bad Check-In" style="width:100%; border-radius: 8px; border: 1px solid rgba(248,81,73,0.2);">
+        <img src="../screenshots/bad_restore.png" alt="Bad Restore" style="width:100%; border-radius: 8px; border: 1px solid rgba(248,81,73,0.2);">
+        <img src="../screenshots/bad_breathe.png" alt="Bad Breathe" style="width:100%; border-radius: 8px; border: 1px solid rgba(248,81,73,0.2);">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: TRIBE v2 Brain Results -->
+<div class="slide slide-dark">
+  <div class="slide-header">
+    <p class="slide-number">06 &mdash; TRIBE v2 Results</p>
+  </div>
+  <h2>Brain Activation Comparison</h2>
+  <p style="font-size: 18px; color: rgba(255,255,255,0.5); margin-top: -32px; margin-bottom: 32px;">
+    Meta FAIR's TRIBE v2 brain encoder predicts cortical activation from visual stimuli.
+    Different designs produce measurably different neural responses.
+  </p>
+  <div class="brain-grid">
+    <div class="brain-card">
+      <h4>Today Screen</h4>
+      <div class="brain-placeholder">TRIBE v2 heatmap &mdash; paste from notebook</div>
+    </div>
+    <div class="brain-card">
+      <h4>Check-In Screen</h4>
+      <div class="brain-placeholder">TRIBE v2 heatmap &mdash; paste from notebook</div>
+    </div>
+    <div class="brain-card">
+      <h4>Restore Screen</h4>
+      <div class="brain-placeholder">TRIBE v2 heatmap &mdash; paste from notebook</div>
+    </div>
+    <div class="brain-card">
+      <h4>Breathe Screen</h4>
+      <div class="brain-placeholder">TRIBE v2 heatmap &mdash; paste from notebook</div>
+    </div>
+    <div class="brain-card">
+      <h4>Rhythms Screen</h4>
+      <div class="brain-placeholder">TRIBE v2 heatmap &mdash; paste from notebook</div>
+    </div>
+    <div class="brain-card">
+      <h4>Difference Map</h4>
+      <div class="brain-placeholder">Good vs Bad difference</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Closing -->
+<div class="slide slide-closing">
+  <h2>Solace</h2>
+  <p class="tagline">Designed to be calming at a neurological level.</p>
+  <div class="deliverables">
+    <div class="deliverable-tag">Research FigJam</div>
+    <div class="deliverable-tag">User Flow FigJam</div>
+    <div class="deliverable-tag">TRIBE v2 Mapping</div>
+    <div class="deliverable-tag">Design System</div>
+    <div class="deliverable-tag">Working Prototype</div>
+  </div>
+  <p class="credit">Built for the Figma Education Program UX Challenge</p>
+</div>
+
+</body>
+</html>

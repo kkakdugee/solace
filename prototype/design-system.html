@@ -1,428 +1,633 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=1600">
-  <title>Solace — Design System Starter</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            space: { 900: '#060D19', 800: '#0B1426', 700: '#111D33', 600: '#1A2744', 500: '#243355' },
-            teal: { 500: '#38B2AC', 400: '#4FD1C5', 300: '#76E4D4' },
-            amber: { 500: '#ED8936', 400: '#F6AD55', 300: '#FBD38D' },
-            coral: { 400: '#FC8181' },
-            mint: { 400: '#68D391' },
-            info: { 400: '#818CF8' },
-            slate: { 200: '#E2E8F0', 400: '#A0AEC0', 500: '#718096' }
-          },
-          fontFamily: { inter: ['Inter', 'sans-serif'] }
-        }
-      }
-    }
-  </script>
-  <style>
-    * { font-family: 'Inter', sans-serif; }
-    body { background: #060D19; color: #E2E8F0; }
-    .swatch { border-radius: 12px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1600">
+<title>Solace — Design System Starter</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    background: #070D1A;
+    color: #E6EDF3;
+    padding: 80px;
+  }
+  .page { max-width: 1440px; margin: 0 auto; }
+
+  h1 { font-size: 40px; font-weight: 600; margin-bottom: 8px; }
+  h2 { font-size: 24px; font-weight: 600; margin-bottom: 32px; margin-top: 64px; color: #E6EDF3; }
+  .subtitle { font-size: 17px; color: #7E8599; line-height: 1.6; }
+  .note { font-size: 13px; color: #4A5168; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #58A6FF;
+    margin-bottom: 16px;
+  }
+
+  /* Grid helpers */
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .flex-row { display: flex; gap: 16px; align-items: center; }
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* Cards */
+  .card {
+    background: #0D1117;
+    border: 1px solid #1C2333;
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  /* Swatches */
+  .swatch {
+    width: 100%;
+    height: 64px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .swatch-name { font-size: 13px; font-weight: 500; color: #E6EDF3; }
+  .swatch-hex { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 2px; }
+  .swatch-use { font-size: 11px; color: #7E8599; margin-top: 2px; }
+
+  /* Principle cards */
+  .principle-card {
+    background: #0D1117;
+    border: 1px solid #1C2333;
+    border-radius: 12px;
+    padding: 24px;
+    border-top: 3px solid;
+  }
+  .principle-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .principle-card p { font-size: 13px; color: #7E8599; line-height: 1.5; }
+  .principle-card .brain { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #58A6FF; margin-bottom: 12px; }
+
+  /* Typography samples */
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 32px;
+    padding: 16px 0;
+    border-bottom: 1px solid #1C2333;
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-spec {
+    width: 200px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #4A5168;
+  }
+  .type-sample { color: #E6EDF3; }
+
+  /* Spacing bars */
+  .space-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .space-label {
+    width: 48px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #7E8599;
+    text-align: right;
+  }
+  .space-bar {
+    height: 12px;
+    background: #105DC8;
+    border-radius: 3px;
+    opacity: 0.6;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'IBM Plex Sans', sans-serif;
+    border: none;
+    cursor: pointer;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Status badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* Touch target demo */
+  .touch-demo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .touch-box {
+    border: 2px dashed;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .touch-label { font-size: 14px; font-weight: 500; }
+  .touch-desc { font-size: 12px; color: #7E8599; }
+
+  /* Component cards */
+  .component-card {
+    background: #E9ECF2;
+    border-radius: 10px;
+    padding: 20px;
+    color: #0E1219;
+  }
+  .component-card-surface {
+    background: #FFFFFF;
+    border-radius: 7px;
+    padding: 18px;
+    border: 1px solid #CDD3DE;
+    box-shadow: 0 1px 3px rgba(7,13,26,0.06);
+  }
+
+  /* Accessibility section */
+  .a11y-card {
+    background: #0D1117;
+    border: 1px solid #1C2333;
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .a11y-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .a11y-card p { font-size: 13px; color: #7E8599; line-height: 1.5; }
+  .a11y-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(88,166,255,0.1);
+    color: #58A6FF;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: 12px;
+  }
+</style>
 </head>
-<body class="font-inter p-16">
-  <div class="max-w-[1500px] mx-auto space-y-16">
+<body>
+<div class="page">
 
-    <!-- ===== HEADER ===== -->
-    <div>
-      <h1 class="text-[40px] font-bold mb-2">Solace Design System</h1>
-      <p class="text-lg text-slate-400">Space-optimized visual language for astronaut mental wellness</p>
-      <p class="text-sm text-slate-500 mt-2">Informed by Meta FAIR's TRIBE v2 neuroscience research &middot; Designed for low-light legibility, glove-friendly touch targets, and low-distraction interfaces</p>
+  <!-- HEADER -->
+  <h1>Solace Design System</h1>
+  <p class="subtitle">Space-optimized visual language for astronaut mental wellness.<br>Informed by Meta FAIR's TRIBE v2 neuroscience research.</p>
+  <p class="note">Purpose-built for low-light legibility, glove-friendly touch targets, and low-distraction interfaces</p>
+
+  <!-- DESIGN PRINCIPLES -->
+  <h2>Design Principles (TRIBE v2)</h2>
+  <div class="grid-5" style="margin-bottom: 16px;">
+    <div class="principle-card" style="border-top-color: #58A6FF;">
+      <p class="brain">Auditory Network</p>
+      <h3>Multi-Sensory Stimuli</h3>
+      <p>Pair nature sounds with visuals for deeper cortical engagement. Audio + visual together activates more cortex than either alone.</p>
     </div>
-
-    <!-- ===== DESIGN PRINCIPLES ===== -->
-    <div>
-      <h2 class="text-2xl font-bold mb-6">Design Principles (TRIBE v2)</h2>
-      <div class="grid grid-cols-5 gap-4">
-        <div class="bg-space-700 rounded-2xl p-5 border border-space-600">
-          <div class="w-10 h-10 rounded-xl bg-teal-400/10 flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          </div>
-          <p class="text-sm font-semibold text-teal-400 mb-1">Minimal Motion</p>
-          <p class="text-xs text-slate-400">Avoid taxing the motion network during cognitive-load screens. Subtle transitions only.</p>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-space-600">
-          <div class="w-10 h-10 rounded-xl bg-teal-400/10 flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          </div>
-          <p class="text-sm font-semibold text-teal-400 mb-1">Icon-Forward</p>
-          <p class="text-xs text-slate-400">Reduce language network load with icon-based navigation. Minimize dense text.</p>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-space-600">
-          <div class="w-10 h-10 rounded-xl bg-teal-400/10 flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-          </div>
-          <p class="text-sm font-semibold text-teal-400 mb-1">Multi-Sensory</p>
-          <p class="text-xs text-slate-400">Pair nature sounds with visuals for restoration. Engage auditory + visual networks together.</p>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-space-600">
-          <div class="w-10 h-10 rounded-xl bg-teal-400/10 flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-          </div>
-          <p class="text-sm font-semibold text-teal-400 mb-1">Default Mode</p>
-          <p class="text-xs text-slate-400">Restoration features engage the default mode network through journaling and nature scenes.</p>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-space-600">
-          <div class="w-10 h-10 rounded-xl bg-teal-400/10 flex items-center justify-center mb-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <p class="text-sm font-semibold text-teal-400 mb-1">Visual Clarity</p>
-          <p class="text-xs text-slate-400">High-contrast dark theme optimized for visual processing. Calming palette, no clutter.</p>
-        </div>
-      </div>
+    <div class="principle-card" style="border-top-color: #3FB950;">
+      <p class="brain">Default Mode Network</p>
+      <h3>Nature & Journaling</h3>
+      <p>Engage the brain's rest-state network through nature exposure and reflective journaling. Designed for restoration, not stimulation.</p>
     </div>
-
-    <!-- ===== COLOR PALETTE ===== -->
-    <div>
-      <h2 class="text-2xl font-bold mb-6">Color Palette</h2>
-
-      <!-- Backgrounds -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Backgrounds</p>
-      <div class="flex gap-3 mb-6">
-        <div><div class="swatch w-[120px] h-16 bg-space-900 border border-space-600"></div><p class="text-xs text-slate-200 mt-2 font-medium">Space 900</p><p class="text-[10px] text-slate-500">#060D19</p></div>
-        <div><div class="swatch w-[120px] h-16 bg-space-800 border border-space-600"></div><p class="text-xs text-slate-200 mt-2 font-medium">Space 800</p><p class="text-[10px] text-slate-500">#0B1426</p></div>
-        <div><div class="swatch w-[120px] h-16 bg-space-700"></div><p class="text-xs text-slate-200 mt-2 font-medium">Surface</p><p class="text-[10px] text-slate-500">#111D33</p></div>
-        <div><div class="swatch w-[120px] h-16 bg-space-600"></div><p class="text-xs text-slate-200 mt-2 font-medium">Surface Hover</p><p class="text-[10px] text-slate-500">#1A2744</p></div>
-        <div><div class="swatch w-[120px] h-16 bg-space-500"></div><p class="text-xs text-slate-200 mt-2 font-medium">Elevated</p><p class="text-[10px] text-slate-500">#243355</p></div>
-      </div>
-
-      <!-- Primary + Secondary -->
-      <div class="grid grid-cols-2 gap-8 mb-6">
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Primary — Teal</p>
-          <div class="flex gap-3">
-            <div><div class="swatch w-[120px] h-16 bg-teal-500"></div><p class="text-xs text-slate-200 mt-2 font-medium">Teal 500</p><p class="text-[10px] text-slate-500">#38B2AC</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-teal-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Teal 400</p><p class="text-[10px] text-slate-500">#4FD1C5</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-teal-300"></div><p class="text-xs text-slate-200 mt-2 font-medium">Teal 300</p><p class="text-[10px] text-slate-500">#76E4D4</p></div>
-          </div>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Secondary — Amber</p>
-          <div class="flex gap-3">
-            <div><div class="swatch w-[120px] h-16 bg-amber-500"></div><p class="text-xs text-slate-200 mt-2 font-medium">Amber 500</p><p class="text-[10px] text-slate-500">#ED8936</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-amber-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Amber 400</p><p class="text-[10px] text-slate-500">#F6AD55</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-amber-300"></div><p class="text-xs text-slate-200 mt-2 font-medium">Amber 300</p><p class="text-[10px] text-slate-500">#FBD38D</p></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Semantic + Text -->
-      <div class="grid grid-cols-2 gap-8">
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Semantic</p>
-          <div class="flex gap-3">
-            <div><div class="swatch w-[120px] h-16 bg-mint-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Success</p><p class="text-[10px] text-slate-500">#68D391</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-coral-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Danger</p><p class="text-[10px] text-slate-500">#FC8181</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-info-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Info</p><p class="text-[10px] text-slate-500">#818CF8</p></div>
-          </div>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Text</p>
-          <div class="flex gap-3">
-            <div><div class="swatch w-[120px] h-16 bg-slate-200"></div><p class="text-xs text-slate-200 mt-2 font-medium">Primary</p><p class="text-[10px] text-slate-500">#E2E8F0</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-slate-400"></div><p class="text-xs text-slate-200 mt-2 font-medium">Secondary</p><p class="text-[10px] text-slate-500">#A0AEC0</p></div>
-            <div><div class="swatch w-[120px] h-16 bg-slate-500"></div><p class="text-xs text-slate-200 mt-2 font-medium">Muted</p><p class="text-[10px] text-slate-500">#718096</p></div>
-          </div>
-        </div>
-      </div>
+    <div class="principle-card" style="border-top-color: #D29922;">
+      <p class="brain">Visual Network</p>
+      <h3>Dark High-Contrast Theme</h3>
+      <p>Optimized for visual processing without strain. Soft gradients over harsh borders. NASA blue palette reads well in low light.</p>
     </div>
-
-    <!-- ===== TYPOGRAPHY ===== -->
-    <div>
-      <h2 class="text-2xl font-bold mb-6">Typography</h2>
-      <p class="text-sm text-slate-400 mb-4">Font: Inter &middot; Line height: 1.5x for body readability in low-light environments</p>
-      <div class="bg-space-700 rounded-2xl p-8 space-y-6 border border-space-600">
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Heading/H1 — 28px Bold</span>
-          <span class="text-[28px] font-bold leading-[36px]">Good morning, Commander</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Heading/H2 — 24px Bold</span>
-          <span class="text-[24px] font-bold leading-[32px]">Restore Hub</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Heading/H3 — 20px Semi</span>
-          <span class="text-[20px] font-semibold leading-[28px]">Today's Schedule</span>
-        </div>
-        <div class="border-t border-space-600 pt-6 flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Body/Large — 18px</span>
-          <span class="text-[18px] leading-[28px]">Your wellness score is trending upward this week.</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Body/Default — 16px</span>
-          <span class="text-[16px] leading-[24px]">Forest Rain soundscape — Gentle rainfall through canopy.</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Body/Small — 14px</span>
-          <span class="text-[14px] leading-[20px]">Checked in 2 hours ago. All systems nominal.</span>
-        </div>
-        <div class="border-t border-space-600 pt-6 flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Label/Default — 14px Med</span>
-          <span class="text-[14px] font-medium leading-[20px]">Sleep Quality</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Label/Small — 12px Med</span>
-          <span class="text-[12px] font-medium leading-[16px]">Up Next</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Caption — 12px</span>
-          <span class="text-[12px] leading-[16px] text-slate-400">Maya &middot; 14:22 UTC</span>
-        </div>
-        <div class="flex items-baseline gap-6">
-          <span class="text-xs text-slate-500 w-32 shrink-0">Overline — 10px Med</span>
-          <span class="text-[10px] font-medium leading-[14px] tracking-[1px] uppercase text-slate-400">MISSION DAY 247</span>
-        </div>
-      </div>
+    <div class="principle-card" style="border-top-color: #F85149;">
+      <p class="brain">Motion Network</p>
+      <h3>Minimal Animation</h3>
+      <p>Excessive motion taxes the brain. Only subtle, purposeful animation — the breathing ring, gentle transitions. Never decorative.</p>
     </div>
-
-    <!-- ===== SPACING & SIZING ===== -->
-    <div>
-      <h2 class="text-2xl font-bold mb-6">Spacing & Sizing</h2>
-      <div class="grid grid-cols-2 gap-8">
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Spacing Scale (4px base grid)</p>
-          <div class="bg-space-700 rounded-2xl p-6 space-y-3 border border-space-600">
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">2px</span><div class="h-3 bg-teal-400/40 rounded" style="width: 8px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">4px</span><div class="h-3 bg-teal-400/50 rounded" style="width: 16px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">8px</span><div class="h-3 bg-teal-400/50 rounded" style="width: 32px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">12px</span><div class="h-3 bg-teal-400/60 rounded" style="width: 48px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">16px</span><div class="h-3 bg-teal-400/60 rounded" style="width: 64px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">20px</span><div class="h-3 bg-teal-400/70 rounded" style="width: 80px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">24px</span><div class="h-3 bg-teal-400/70 rounded" style="width: 96px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">32px</span><div class="h-3 bg-teal-400/80 rounded" style="width: 128px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">48px</span><div class="h-3 bg-teal-400/80 rounded" style="width: 192px"></div></div>
-            <div class="flex items-center gap-4"><span class="text-xs text-slate-500 w-16">64px</span><div class="h-3 bg-teal-400 rounded" style="width: 256px"></div></div>
-          </div>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-400 mb-3">Touch Targets & Sizing</p>
-          <div class="bg-space-700 rounded-2xl p-6 border border-space-600">
-            <div class="space-y-4">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-teal-400/10 border-2 border-dashed border-teal-400/30 flex items-center justify-center text-xs text-teal-400">48px</div>
-                <div><p class="text-sm font-medium">Minimum Touch Target</p><p class="text-xs text-slate-500">Required for glove-friendly operation</p></div>
-              </div>
-              <div class="flex items-center gap-4">
-                <div class="w-[72px] h-12 rounded-xl bg-amber-400/10 border-2 border-dashed border-amber-400/30 flex items-center justify-center text-xs text-amber-400">72px</div>
-                <div><p class="text-sm font-medium">Tab Bar Width</p><p class="text-xs text-slate-500">Vertical navigation sidebar</p></div>
-              </div>
-              <div class="flex items-center gap-4">
-                <div class="flex gap-2 items-end">
-                  <div class="w-4 h-4 rounded bg-slate-500/30 border border-slate-500/50"></div>
-                  <div class="w-5 h-5 rounded bg-slate-500/30 border border-slate-500/50"></div>
-                  <div class="w-6 h-6 rounded bg-slate-500/30 border border-slate-500/50"></div>
-                </div>
-                <div><p class="text-sm font-medium">Icon Sizes: 16 / 20 / 24px</p><p class="text-xs text-slate-500">Small, medium, large</p></div>
-              </div>
-              <div class="flex items-center gap-4">
-                <div class="flex gap-2 items-end">
-                  <div class="w-8 h-8 rounded-full bg-teal-400/20 border border-teal-400/30"></div>
-                  <div class="w-10 h-10 rounded-full bg-teal-400/20 border border-teal-400/30"></div>
-                  <div class="w-12 h-12 rounded-full bg-teal-400/20 border border-teal-400/30"></div>
-                </div>
-                <div><p class="text-sm font-medium">Avatar Sizes: 32 / 40 / 48px</p><p class="text-xs text-slate-500">Small, medium, large</p></div>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-space-600">
-              <p class="text-sm font-medium text-slate-400 mb-2">Border Radius</p>
-              <div class="flex gap-4 items-end">
-                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 bg-space-500 rounded-lg"></div><span class="text-[10px] text-slate-500">8px sm</span></div>
-                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 bg-space-500 rounded-xl"></div><span class="text-[10px] text-slate-500">12px md</span></div>
-                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 bg-space-500 rounded-2xl"></div><span class="text-[10px] text-slate-500">16px lg</span></div>
-                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 bg-space-500 rounded-[20px]"></div><span class="text-[10px] text-slate-500">20px xl</span></div>
-                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 bg-space-500 rounded-full"></div><span class="text-[10px] text-slate-500">full</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="principle-card" style="border-top-color: #A371F7;">
+      <p class="brain">Language Network</p>
+      <h3>Icon-Forward Navigation</h3>
+      <p>Reduce language processing load. Large icons, visual selectors, minimal text. The interface should be scannable in seconds.</p>
     </div>
-
-    <!-- ===== COMPONENTS ===== -->
-    <div>
-      <h2 class="text-2xl font-bold mb-6">Core Components</h2>
-
-      <!-- Buttons -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Buttons</p>
-      <div class="flex gap-4 mb-8 items-center">
-        <button class="px-6 py-3 bg-teal-400 text-space-900 font-semibold rounded-xl text-sm" style="min-height: 48px;">Primary Action</button>
-        <button class="px-6 py-3 bg-transparent border-2 border-teal-400 text-teal-400 font-semibold rounded-xl text-sm" style="min-height: 48px;">Secondary</button>
-        <button class="px-6 py-3 bg-space-700 text-slate-200 font-medium rounded-xl text-sm border border-space-600" style="min-height: 48px;">Ghost Button</button>
-        <button class="px-6 py-3 bg-amber-400 text-space-900 font-semibold rounded-xl text-sm" style="min-height: 48px;">Warm Action</button>
-        <button class="px-6 py-3 bg-coral-400 text-space-900 font-semibold rounded-xl text-sm" style="min-height: 48px;">Danger</button>
-        <button class="w-12 h-12 bg-teal-400 rounded-xl flex items-center justify-center">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#060D19" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-      </div>
-
-      <!-- Cards -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Cards</p>
-      <div class="grid grid-cols-4 gap-4 mb-8">
-        <div class="bg-space-700 rounded-2xl p-5 border border-[rgba(79,209,197,0.08)]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-slate-400 text-sm">Mood</span>
-            <span class="text-2xl">&#128522;</span>
-          </div>
-          <p class="text-xl font-semibold">Positive</p>
-          <div class="flex items-center gap-1 mt-2">
-            <span class="text-mint-400 text-xs">+12% from yesterday</span>
-          </div>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-[rgba(79,209,197,0.08)]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-slate-400 text-sm">Sleep Quality</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6AD55" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </div>
-          <p class="text-xl font-semibold">7.2 hrs</p>
-          <span class="text-amber-400 text-xs">85% efficiency</span>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-[rgba(79,209,197,0.08)]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-slate-400 text-sm">Stress Level</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          </div>
-          <p class="text-xl font-semibold">Low</p>
-          <div class="w-full bg-space-500 rounded-full h-2 mt-3"><div class="bg-teal-400 h-2 rounded-full" style="width: 28%"></div></div>
-        </div>
-        <div class="bg-space-700 rounded-2xl p-5 border border-[rgba(79,209,197,0.08)]">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-slate-400 text-sm">Crew Pulse</span>
-            <div class="flex -space-x-2">
-              <div class="w-6 h-6 rounded-full bg-amber-400/20 border border-space-700 flex items-center justify-center text-[10px] text-amber-400">M</div>
-              <div class="w-6 h-6 rounded-full bg-teal-400/20 border border-space-700 flex items-center justify-center text-[10px] text-teal-400">S</div>
-              <div class="w-6 h-6 rounded-full bg-coral-400/20 border border-space-700 flex items-center justify-center text-[10px] text-coral-400">J</div>
-            </div>
-          </div>
-          <p class="text-xl font-semibold">All Good</p>
-          <p class="text-slate-500 text-xs mt-2">3/3 crew checked in</p>
-        </div>
-      </div>
-
-      <!-- Tab Bar -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Tab Bar (Icon-Only Navigation)</p>
-      <div class="flex gap-4 mb-8 items-start">
-        <div class="w-[72px] bg-space-800 flex flex-col items-center py-6 gap-2 rounded-2xl border border-space-600">
-          <div class="mb-4">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="18" r="16" stroke="#4FD1C5" stroke-width="2" fill="none"/>
-              <circle cx="18" cy="18" r="6" fill="#4FD1C5" opacity="0.3"/>
-              <circle cx="18" cy="18" r="3" fill="#4FD1C5"/>
-            </svg>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-space-700">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4FD1C5" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            <div class="w-1 h-1 rounded-full bg-teal-400"></div>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 rounded-xl">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-            <div class="w-1 h-1 rounded-full bg-teal-400 opacity-0"></div>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 rounded-xl">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10"/><path d="M22 12c0-5.52-4.48-10-10-10"/></svg>
-            <div class="w-1 h-1 rounded-full bg-teal-400 opacity-0"></div>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 rounded-xl">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <div class="w-1 h-1 rounded-full bg-teal-400 opacity-0"></div>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 rounded-xl">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <div class="w-1 h-1 rounded-full bg-teal-400 opacity-0"></div>
-          </div>
-        </div>
-        <div class="text-sm text-slate-400 mt-4 space-y-1 ml-4">
-          <p><span class="text-teal-400 font-medium">Icon-only tabs</span> — no labels per TRIBE v2 language network principle</p>
-          <p><span class="text-amber-400 font-medium">72px wide sidebar</span> — glove-friendly vertical navigation</p>
-          <p><span class="text-slate-200 font-medium">Active indicator</span> — teal dot + icon color change</p>
-          <p><span class="text-slate-200 font-medium">Solace logo</span> — orbital/planetary motif at top</p>
-        </div>
-      </div>
-
-      <!-- Badges & Tags -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Badges & Tags</p>
-      <div class="flex gap-3 mb-8 items-center">
-        <span class="text-xs text-teal-400 bg-teal-400/10 px-3 py-1.5 rounded-full border border-teal-400/20">Completed</span>
-        <span class="text-xs text-amber-400 bg-amber-400/10 px-3 py-1.5 rounded-full border border-amber-400/20">Up Next</span>
-        <span class="text-xs text-slate-500 bg-space-500 px-3 py-1.5 rounded-full">Upcoming</span>
-        <span class="text-xs text-coral-400 bg-coral-400/10 px-3 py-1.5 rounded-full border border-coral-400/20">Alert</span>
-        <span class="text-xs text-info-400 bg-info-400/10 px-3 py-1.5 rounded-full border border-info-400/20">Info</span>
-        <div class="flex items-center gap-2 ml-4">
-          <div class="w-2 h-2 rounded-full bg-mint-400 animate-pulse"></div>
-          <span class="text-sm text-slate-400">Status dot (animated)</span>
-        </div>
-      </div>
-
-      <!-- Inputs -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Input Fields</p>
-      <div class="flex gap-4 mb-8 max-w-2xl">
-        <input type="text" class="flex-1 bg-space-800 border border-space-600 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500" placeholder="Type a message..." style="min-height: 48px;" readonly>
-        <div class="flex-1">
-          <textarea class="w-full h-20 bg-space-800 border border-space-600 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 resize-none" placeholder="Anything on your mind today..." readonly></textarea>
-        </div>
-      </div>
-
-      <!-- Message Bubbles -->
-      <p class="text-sm font-medium text-slate-400 mb-3">Message Bubbles</p>
-      <div class="max-w-xl space-y-3 mb-8">
-        <div class="flex gap-3">
-          <div class="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center text-xs font-semibold text-amber-400 shrink-0">MR</div>
-          <div>
-            <div class="bg-space-600 rounded-2xl rounded-tl-md p-4"><p class="text-sm">Incoming crew message bubble</p></div>
-            <p class="text-[10px] text-slate-500 mt-1 ml-1">Maya &middot; 14:22 UTC</p>
-          </div>
-        </div>
-        <div class="flex gap-3 justify-end">
-          <div>
-            <div class="bg-teal-400/15 rounded-2xl rounded-tr-md p-4"><p class="text-sm">Your own message bubble</p></div>
-            <p class="text-[10px] text-slate-500 mt-1 text-right mr-1">You &middot; 15:02 UTC</p>
-          </div>
-          <div class="w-8 h-8 rounded-full bg-teal-400/20 flex items-center justify-center text-xs font-semibold text-teal-400 shrink-0">AK</div>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="flex-1 h-px bg-amber-400/20"></div>
-          <span class="text-[10px] text-amber-400 px-2">Earth Message &middot; 22 min delay</span>
-          <div class="flex-1 h-px bg-amber-400/20"></div>
-        </div>
-        <div class="flex gap-3">
-          <div class="w-8 h-8 rounded-full bg-amber-400/30 flex items-center justify-center text-xs font-semibold text-amber-400 shrink-0">DC</div>
-          <div>
-            <div class="bg-amber-400/10 rounded-2xl rounded-tl-md p-4 border border-amber-400/15"><p class="text-sm">Earth message with delay indicator</p></div>
-            <p class="text-[10px] text-amber-400/60 mt-1 ml-1">Dr. Chen (Earth) &middot; Sent 09:40 &middot; Received 10:02</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== ACCESSIBILITY NOTES ===== -->
-    <div class="bg-space-700 rounded-2xl p-8 border border-space-600">
-      <h2 class="text-xl font-bold mb-4">Accessibility & Space Context Notes</h2>
-      <div class="grid grid-cols-3 gap-6 text-sm">
-        <div>
-          <p class="text-teal-400 font-semibold mb-2">Low-Light Legibility</p>
-          <p class="text-slate-400">Dark background (#060D19) with high-contrast text (#E2E8F0) exceeds WCAG AAA ratio of 15.2:1. All color pairs tested for 4.5:1 minimum.</p>
-        </div>
-        <div>
-          <p class="text-amber-400 font-semibold mb-2">Glove-Friendly Targets</p>
-          <p class="text-slate-400">Minimum 48px touch targets throughout. Tab bar icons at 72px width. Buttons have generous padding for EVA glove use.</p>
-        </div>
-        <div>
-          <p class="text-info-400 font-semibold mb-2">Low-Distraction Interface</p>
-          <p class="text-slate-400">Minimal animation (TRIBE v2 motion principle). No auto-scrolling. Calm color palette. Icon-forward navigation reduces cognitive load.</p>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <!-- COLOR PALETTE -->
+  <h2>Color Palette</h2>
+
+  <p class="section-label">Primary & Accent</p>
+  <div class="grid-5" style="margin-bottom: 32px;">
+    <div>
+      <div class="swatch" style="background: #0B3D91;"></div>
+      <p class="swatch-name">NASA Blue</p>
+      <p class="swatch-hex">#0B3D91</p>
+      <p class="swatch-use">Primary actions, brand</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #105DC8;"></div>
+      <p class="swatch-name">Accent</p>
+      <p class="swatch-hex">#105DC8</p>
+      <p class="swatch-use">Interactive elements</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #2970D6;"></div>
+      <p class="swatch-name">Accent Soft</p>
+      <p class="swatch-hex">#2970D6</p>
+      <p class="swatch-use">Hover states</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #58A6FF;"></div>
+      <p class="swatch-name">Accent Light</p>
+      <p class="swatch-hex">#58A6FF</p>
+      <p class="swatch-use">Highlights, links</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #E4EDF9;"></div>
+      <p class="swatch-name">Accent BG</p>
+      <p class="swatch-hex">#E4EDF9</p>
+      <p class="swatch-use">Selected state fills</p>
+    </div>
+  </div>
+
+  <p class="section-label">Backgrounds & Surfaces</p>
+  <div class="grid-5" style="margin-bottom: 32px;">
+    <div>
+      <div class="swatch" style="background: #070D1A; border: 1px solid #1C2333;"></div>
+      <p class="swatch-name">Nav Background</p>
+      <p class="swatch-hex">#070D1A</p>
+      <p class="swatch-use">Sidebar, navigation</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #0B1426; border: 1px solid #1C2333;"></div>
+      <p class="swatch-name">Header</p>
+      <p class="swatch-hex">#0B1426</p>
+      <p class="swatch-use">Top bar, mission clock</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #E9ECF2;"></div>
+      <p class="swatch-name">Page Background</p>
+      <p class="swatch-hex">#E9ECF2</p>
+      <p class="swatch-use">Main content area</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #FFFFFF; border: 1px solid #CDD3DE;"></div>
+      <p class="swatch-name">Surface</p>
+      <p class="swatch-hex">#FFFFFF</p>
+      <p class="swatch-use">Cards, panels</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #161B22;"></div>
+      <p class="swatch-name">Immersive Surface</p>
+      <p class="swatch-hex">#161B22</p>
+      <p class="swatch-use">Overlay backgrounds</p>
+    </div>
+  </div>
+
+  <p class="section-label">Semantic Colors</p>
+  <div class="grid-5" style="margin-bottom: 32px;">
+    <div>
+      <div class="swatch" style="background: #0F7B4A;"></div>
+      <p class="swatch-name">Green</p>
+      <p class="swatch-hex">#0F7B4A</p>
+      <p class="swatch-use">Success, done states</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #E2F4EB;"></div>
+      <p class="swatch-name">Green Light</p>
+      <p class="swatch-hex">#E2F4EB</p>
+      <p class="swatch-use">Done badge background</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #C07A00;"></div>
+      <p class="swatch-name">Amber</p>
+      <p class="swatch-hex">#C07A00</p>
+      <p class="swatch-use">Schedule, next states</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #FFF5DC;"></div>
+      <p class="swatch-name">Amber Light</p>
+      <p class="swatch-hex">#FFF5DC</p>
+      <p class="swatch-use">Next badge background</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #FC3D21;"></div>
+      <p class="swatch-name">NASA Red</p>
+      <p class="swatch-hex">#FC3D21</p>
+      <p class="swatch-use">Active indicator, alerts</p>
+    </div>
+  </div>
+
+  <p class="section-label">Text / Ink</p>
+  <div class="grid-5" style="margin-bottom: 16px;">
+    <div>
+      <div class="swatch" style="background: #0E1219;"></div>
+      <p class="swatch-name">Ink (Primary)</p>
+      <p class="swatch-hex">#0E1219</p>
+      <p class="swatch-use">Headings, body text</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #4A5168;"></div>
+      <p class="swatch-name">Ink Mid</p>
+      <p class="swatch-hex">#4A5168</p>
+      <p class="swatch-use">Descriptions, secondary</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #7E8599;"></div>
+      <p class="swatch-name">Ink Light</p>
+      <p class="swatch-hex">#7E8599</p>
+      <p class="swatch-use">Labels, timestamps</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #CDD3DE;"></div>
+      <p class="swatch-name">Border</p>
+      <p class="swatch-hex">#CDD3DE</p>
+      <p class="swatch-use">Card borders, dividers</p>
+    </div>
+    <div>
+      <div class="swatch" style="background: #DFE3EB;"></div>
+      <p class="swatch-name">Border Light</p>
+      <p class="swatch-hex">#DFE3EB</p>
+      <p class="swatch-use">Subtle separators</p>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <h2>Typography</h2>
+  <div class="grid-2">
+    <div class="card">
+      <p class="section-label">Primary — IBM Plex Sans</p>
+      <div class="type-row">
+        <span class="type-spec">H1 — 26px / Light 300<br>letter-spacing: -0.015em</span>
+        <span class="type-sample" style="font-size: 26px; font-weight: 300; letter-spacing: -0.015em;">Good morning, Commander</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">H2 — 24px / Light 300</span>
+        <span class="type-sample" style="font-size: 24px; font-weight: 300;">Restore Hub</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">H3 — 15px / Medium 500</span>
+        <span class="type-sample" style="font-size: 15px; font-weight: 500;">Today's Schedule</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">Body — 13px / Regular 400<br>line-height: 1.45</span>
+        <span class="type-sample" style="font-size: 13px; line-height: 1.45; color: #7E8599;">Your wellness score is trending upward this week. Forest Rain soundscape — Gentle rainfall through canopy.</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">Small — 12px / Regular 400</span>
+        <span class="type-sample" style="font-size: 12px; color: #7E8599;">Checked in 2 hours ago. All systems nominal.</span>
+      </div>
+    </div>
+    <div class="card">
+      <p class="section-label">Monospace — IBM Plex Mono</p>
+      <div class="type-row">
+        <span class="type-spec">Label — 11px / Medium 500<br>letter-spacing: 0.05em<br>text-transform: uppercase</span>
+        <span class="type-sample" style="font-size: 11px; font-weight: 500; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.05em; text-transform: uppercase;">Mission Day 247</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">Overline — 10px / Medium<br>letter-spacing: 0.08em</span>
+        <span class="type-sample" style="font-size: 10px; font-weight: 500; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; color: #7E8599;">Sleep Quality</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">Timestamp — 11px / Regular<br>letter-spacing: 0.05em</span>
+        <span class="type-sample" style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.05em; color: #7E8599;">06:30 UTC &middot; Sol 247</span>
+      </div>
+      <div class="type-row">
+        <span class="type-spec">Nav Label — 8px / Medium<br>letter-spacing: 0.2em</span>
+        <span class="type-sample" style="font-size: 8px; font-weight: 500; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.2em; text-transform: uppercase;">Today</span>
+      </div>
+      <div class="type-row" style="border-bottom: none;">
+        <span class="type-spec">Status — 11px / Regular</span>
+        <span class="type-sample" style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #2ECC71;">&#x25CF; Nominal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPACING & TOUCH TARGETS -->
+  <h2>Spacing, Sizing & Radius</h2>
+  <div class="grid-2">
+    <div class="card">
+      <p class="section-label">Spacing Scale (16px base grid)</p>
+      <div style="padding: 8px 0;">
+        <div class="space-row"><span class="space-label">4px</span><div class="space-bar" style="width: 16px;"></div></div>
+        <div class="space-row"><span class="space-label">8px</span><div class="space-bar" style="width: 32px;"></div></div>
+        <div class="space-row"><span class="space-label">12px</span><div class="space-bar" style="width: 48px;"></div></div>
+        <div class="space-row"><span class="space-label">16px</span><div class="space-bar" style="width: 64px; opacity: 0.8;"></div></div>
+        <div class="space-row"><span class="space-label">20px</span><div class="space-bar" style="width: 80px;"></div></div>
+        <div class="space-row"><span class="space-label">28px</span><div class="space-bar" style="width: 112px;"></div></div>
+        <div class="space-row"><span class="space-label">32px</span><div class="space-bar" style="width: 128px; opacity: 0.8;"></div></div>
+        <div class="space-row"><span class="space-label">48px</span><div class="space-bar" style="width: 192px; opacity: 0.9;"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="section-label">Touch Targets (Glove-Friendly)</p>
+      <div class="touch-demo">
+        <div class="touch-box" style="width: 48px; height: 48px; border-color: #105DC8; color: #58A6FF;">48</div>
+        <div>
+          <p class="touch-label">Minimum Touch Target</p>
+          <p class="touch-desc">Required for EVA glove operation</p>
+        </div>
+      </div>
+      <div class="touch-demo">
+        <div class="touch-box" style="width: 62px; height: 56px; border-color: #C07A00; color: #D29922;">62</div>
+        <div>
+          <p class="touch-label">Nav Sidebar Width</p>
+          <p class="touch-desc">Vertical navigation rail</p>
+        </div>
+      </div>
+      <div class="touch-demo">
+        <div class="touch-box" style="width: 44px; height: 44px; border-color: #0F7B4A; color: #3FB950;">44</div>
+        <div>
+          <p class="touch-label">Top Bar Height</p>
+          <p class="touch-desc">Mission clock header</p>
+        </div>
+      </div>
+      <p class="section-label" style="margin-top: 24px;">Border Radius</p>
+      <div style="display: flex; gap: 20px; align-items: end;">
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; background: #1C2333; border-radius: 4px;"></div>
+          <span style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 6px; display: block;">4px tag</span>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; background: #1C2333; border-radius: 7px;"></div>
+          <span style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 6px; display: block;">7px sm</span>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; background: #1C2333; border-radius: 10px;"></div>
+          <span style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 6px; display: block;">10px default</span>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; background: #1C2333; border-radius: 50%;"></div>
+          <span style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 6px; display: block;">full</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE COMPONENTS -->
+  <h2>Core Components</h2>
+
+  <p class="section-label">Buttons</p>
+  <div style="display: flex; gap: 16px; margin-bottom: 32px; align-items: center;">
+    <button class="btn" style="background: #0B3D91; color: #fff;">Submit Check-In</button>
+    <button class="btn" style="background: #105DC8; color: #fff;">Primary Action</button>
+    <button class="btn" style="background: #E9ECF2; color: #0E1219; border: 1px solid #CDD3DE;">Secondary</button>
+    <button class="btn" style="background: #4A5168; color: #fff;">End Session</button>
+    <button class="btn" style="background: #161B22; color: #E6EDF3; border: 1px solid #30363D;">Begin Session</button>
+  </div>
+
+  <p class="section-label">Status Badges</p>
+  <div style="display: flex; gap: 12px; margin-bottom: 32px; align-items: center;">
+    <span class="badge" style="background: #E2F4EB; color: #0F7B4A;">Done</span>
+    <span class="badge" style="background: #FFF5DC; color: #C07A00;">Next</span>
+    <span class="badge" style="background: #E4EDF9; color: #105DC8;">Upcoming</span>
+    <span class="badge" style="background: rgba(88,166,255,0.1); color: #58A6FF;">Active</span>
+    <span class="badge" style="background: #F0F0F4; color: #7E8599;">Idle</span>
+  </div>
+
+  <p class="section-label">Cards (Light Theme — Main Content)</p>
+  <div class="grid-4" style="margin-bottom: 32px;">
+    <!-- Today Card -->
+    <div class="component-card">
+      <div class="component-card-surface">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <div style="width: 4px; height: 32px; background: #105DC8; border-radius: 2px;"></div>
+          <div>
+            <p style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #7E8599; text-transform: uppercase; letter-spacing: 0.05em;">Check-In</p>
+            <p style="font-size: 14px; font-weight: 500; color: #0E1219;">Daily check-in</p>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: #4A5168;">How are you feeling today?</p>
+      </div>
+    </div>
+    <!-- Restore Card -->
+    <div class="component-card">
+      <div class="component-card-surface">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <div style="width: 4px; height: 32px; background: #0F7B4A; border-radius: 2px;"></div>
+          <div>
+            <p style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #7E8599; text-transform: uppercase; letter-spacing: 0.05em;">Restore</p>
+            <p style="font-size: 14px; font-weight: 500; color: #0E1219;">Take a break</p>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: #4A5168;">Nature sounds and breathing</p>
+      </div>
+    </div>
+    <!-- Rhythms Card -->
+    <div class="component-card">
+      <div class="component-card-surface">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <div style="width: 4px; height: 32px; background: #C07A00; border-radius: 2px;"></div>
+          <div>
+            <p style="font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: #7E8599; text-transform: uppercase; letter-spacing: 0.05em;">Rhythms</p>
+            <p style="font-size: 14px; font-weight: 500; color: #0E1219;">Sleep & light</p>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: #4A5168;">Track circadian health</p>
+      </div>
+    </div>
+    <!-- Mood Ring -->
+    <div class="component-card">
+      <div style="display: flex; flex-direction: column; align-items: center; padding: 12px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#E4EDF9, #105DC8, #E4EDF9); display: flex; align-items: center; justify-content: center;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: #E9ECF2; display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 18px; font-weight: 300; color: #0E1219;">72</span>
+          </div>
+        </div>
+        <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #7E8599; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.05em;">Wellness Score</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Soundscape Cards (Dark Immersive)</p>
+  <div class="grid-4" style="margin-bottom: 32px;">
+    <div style="background: #1E4A1E; border-radius: 10px; overflow: hidden;">
+      <div style="height: 100px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));"></div>
+      <div style="padding: 12px;">
+        <p style="font-size: 14px; font-weight: 500; color: #fff;">Forest Rain</p>
+        <p style="font-size: 12px; color: rgba(255,255,255,0.6);">Canopy rainfall</p>
+        <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); margin-top: 4px;">10:00</p>
+      </div>
+    </div>
+    <div style="background: #1A3B5A; border-radius: 10px; overflow: hidden;">
+      <div style="height: 100px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));"></div>
+      <div style="padding: 12px;">
+        <p style="font-size: 14px; font-weight: 500; color: #fff;">Ocean Shore</p>
+        <p style="font-size: 12px; color: rgba(255,255,255,0.6);">Waves on sand</p>
+        <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); margin-top: 4px;">15:00</p>
+      </div>
+    </div>
+    <div style="background: #2A3A4A; border-radius: 10px; overflow: hidden;">
+      <div style="height: 100px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));"></div>
+      <div style="padding: 12px;">
+        <p style="font-size: 14px; font-weight: 500; color: #fff;">Quiet Rain</p>
+        <p style="font-size: 12px; color: rgba(255,255,255,0.6);">Gentle rainfall</p>
+        <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); margin-top: 4px;">10:00</p>
+      </div>
+    </div>
+    <div style="background: #0D0D1F; border-radius: 10px; overflow: hidden;">
+      <div style="height: 100px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));"></div>
+      <div style="padding: 12px;">
+        <p style="font-size: 14px; font-weight: 500; color: #fff;">Night Sky</p>
+        <p style="font-size: 12px; color: rgba(255,255,255,0.6);">Cricket chorus</p>
+        <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: rgba(255,255,255,0.4); margin-top: 4px;">20:00</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHADOWS -->
+  <p class="section-label">Elevation / Shadows</p>
+  <div style="display: flex; gap: 32px; margin-bottom: 16px;">
+    <div style="text-align: center;">
+      <div style="width: 120px; height: 80px; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(7,13,26,0.06), 0 1px 2px rgba(7,13,26,0.04);"></div>
+      <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 8px;">shadow-sm</p>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 120px; height: 80px; background: #fff; border-radius: 10px; box-shadow: 0 3px 10px rgba(7,13,26,0.08), 0 1px 3px rgba(7,13,26,0.05);"></div>
+      <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 8px;">shadow-md</p>
+    </div>
+    <div style="text-align: center;">
+      <div style="width: 120px; height: 80px; background: #fff; border-radius: 10px; box-shadow: 0 6px 20px rgba(7,13,26,0.1), 0 2px 6px rgba(7,13,26,0.06);"></div>
+      <p style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #4A5168; margin-top: 8px;">shadow-lg</p>
+    </div>
+  </div>
+
+  <!-- ACCESSIBILITY -->
+  <h2>Accessibility & Space Context</h2>
+  <div class="grid-3">
+    <div class="a11y-card">
+      <h3>Low-Light Legibility</h3>
+      <p>Dark navigation (#070D1A) with high-contrast text (#E6EDF3). Light content area (#E9ECF2) maintains readability. Tested at 12-17px minimum body text sizes.</p>
+      <span class="a11y-tag">WCAG AA Contrast</span>
+    </div>
+    <div class="a11y-card">
+      <h3>Glove-Friendly Targets</h3>
+      <p>Minimum 48px touch targets across all interactive elements. Tab bar buttons at 48x56px. Form controls at 44px minimum height. Generous padding on all tappable areas.</p>
+      <span class="a11y-tag">48px Minimum</span>
+    </div>
+    <div class="a11y-card">
+      <h3>Low-Distraction Interface</h3>
+      <p>Minimal animation per TRIBE v2 Motion Network research. No decorative motion. Subtle transitions (0.15-0.3s ease). Breathing ring is the only sustained animation — purposeful, not decorative.</p>
+      <span class="a11y-tag">Reduced Motion Safe</span>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
