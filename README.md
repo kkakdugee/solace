@@ -5,7 +5,7 @@ Won the Figma Challenge at Build4Good 2026. Mental wellness for astronauts, desi
 
 ## Inspiration
 
-Astronauts on deep space missions face some of the most psychologically demanding conditions any human has ever experienced. They're isolated in a tiny spacecraft for years, millions of miles from home, with no nature, no privacy, and 16 sunrises a day throwing off their sleep. Current mental health tools for astronauts rely on clinical questionnaires that feel like medical paperwork. We wanted to build something that feels more like a personal wellness companion. Something that brings the calming, restorative power of nature into a spacecraft, backed by actual neuroscience.
+Astronauts on deep space missions face some of the most psychologically demanding conditions any human has ever experienced. They're isolated in a tiny spacecraft for years, millions of miles from home, with no nature, no privacy, and 16 sunrises a day throwing off their sleep. Current mental health tools for astronauts rely on clinical questionnaires that feel like medical paperwork. We wanted to build something that feels more like a personal wellness companion. Something that brings the calming, restorative power of nature into a spacecraft, backed by actual neuroscience. This is where Solace comes in.
 
 ## Overview
 
