@@ -27,7 +27,6 @@ The app uses a dark navigation with a light content area, NASA blue accents, IBM
 5. **Prototype**: Developed a fully functional HTML/CSS/JS prototype with 5 navigable screens, immersive soundscape overlays with ambient audio, an animated breathing exercise, and URL-parameter-driven state management for easy screen capture.
 6. **Validation**: Built a "bad" version of the prototype that uses clinical anti-patterns (harsh white background, alarm-red accents, dense text, no nature imagery) and ran both versions through TRIBE v2 in Google Colab. Compared the predicted brain activation maps side by side to measure how differently the brain responds to each design.
 
-
 ## Challenges
 
 - **Bringing nature into a spacecraft**: The hardest design challenge was figuring out how to recreate the restorative feeling of nature in an interface. We landed on immersive full-screen soundscape overlays that combine ambient audio with nature imagery.
@@ -55,7 +54,6 @@ The app uses a dark navigation with a light content area, NASA blue accents, IBM
 - **Adaptive recommendations**: Using wellness score trends over time to proactively suggest activities before stress compounds.
 - **Mission control dashboard**: A crew-level view that lets ground teams monitor behavioral health trends without compromising individual privacy.
 - **Real brain validation**: Moving from predicted cortical activation to actual EEG/fNIRS studies with the prototype.
-
 
 ## Figma Links
 
